@@ -7,7 +7,19 @@
         <title>{% block title %}TRT Conseil{% endblock %}</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     </head>
-    <body>
-        {% block content %}{% endblock %}
+    <body class="bg-gray-100">
+        <header class="bg-slate-200 mb-5">
+            <div class="max-w-screen-md mx-auto py-4 flex justify-between items-center">
+                <div class="text-2xl text-gray-800">TRT Conseil</div>
+                <nav class="space-x-4 text-gray-500">
+                    <a href="#" class="hover:text-gray-800">Accueil</a>
+                    <a href="{{ url_for('auth.register')}}" class="hover:text-gray-800">Créer un compte</a>
+                    <a href="#" class="hover:text-gray-800">Se connecter</a>
+                </nav>
+            </div>
+        </header>
+        <div class="max-w-screen-md mx-auto">
+            {% block content %}{% endblock %}
+        </div>
     </body>
 </html>
