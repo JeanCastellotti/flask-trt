@@ -12,13 +12,22 @@
             <div class="max-w-screen-md mx-auto py-4 flex justify-between items-center">
                 <div class="text-2xl text-gray-800">TRT Conseil</div>
                 <nav class="space-x-4 text-gray-500">
-                    <a href="#" class="hover:text-gray-800">Accueil</a>
+                    <a href="{{ url_for('main.home') }}" class="hover:text-gray-800">Accueil</a>
                     <a href="{{ url_for('auth.register')}}" class="hover:text-gray-800">Créer un compte</a>
                     <a href="#" class="hover:text-gray-800">Se connecter</a>
                 </nav>
             </div>
         </header>
         <div class="max-w-screen-md mx-auto">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="{{ category }}">
+                            {{ message }}
+                        </div>            
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
             {% block content %}{% endblock %}
         </div>
     </body>
