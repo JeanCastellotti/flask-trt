@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request, abort
-from flask_login import login_user, current_user
+from flask_login import login_user, current_user, logout_user
 from .forms import RegistrationForm, LoginForm
 from app import bcrypt, db
 from app.models import User, Candidate, Recruiter
@@ -21,7 +21,7 @@ def register():
             db.session.commit()
         except:
             flash("Un problème est survenu.", "error")
-            return redirect(url_for("main.home"))
+            return redirect(url_for("auth.register"))
         flash("Votre compte a bien été créé.", "success")
         return redirect(url_for("auth.login"))
     return render_template("register.html", form=form)
@@ -46,3 +46,10 @@ def login():
             return redirect(next_page or url_for("main.home"))
         flash("Vos identifiants sont incorrects", "error")
     return render_template("login.html", form=form)
+
+
+@auth.route("/logout")
+def logout():
+    logout_user()
+    flash("Vous avez été déconnecté.", "success")
+    return redirect(url_for("auth.login"))
