@@ -23,7 +23,7 @@ def register():
             flash("Un problème est survenu.", "error")
             return redirect(url_for("main.home"))
         flash("Votre compte a bien été créé.", "success")
-        return redirect(url_for("main.login"))
+        return redirect(url_for("auth.login"))
     return render_template("register.html", form=form)
 
 

@@ -19,7 +19,7 @@ class RegistrationForm(FlaskForm):
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
         if user:
-            raise ValidationError("This email address is not available.")
+            raise ValidationError(EMAIL_NOT_AVAILABLE)
 
 
 class LoginForm(FlaskForm):
