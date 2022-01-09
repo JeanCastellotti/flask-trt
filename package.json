@@ -1,5 +1,27 @@
 {
+  "name": "flask-trt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "tailwind.config.js",
+  "scripts": {
+    "dev": "postcss ./app/src/tailwind.css -o ./app/static/css/style.css -w",
+    "build": "postcss ./app/src/tailwind.css -o ./app/static/css/style.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JeanDevFR/flask-trt.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JeanDevFR/flask-trt/issues"
+  },
+  "homepage": "https://github.com/JeanDevFR/flask-trt#readme",
   "devDependencies": {
+    "autoprefixer": "^10.4.2",
+    "cssnano": "^5.0.15",
+    "postcss": "^8.4.5",
     "tailwindcss": "^3.0.12"
   }
 }
