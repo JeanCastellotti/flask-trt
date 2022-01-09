@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1 class="text-xl text-gray-800 mb-5">Créer un compte</h1>
-    <form action="" method="post" novalidate autocomplete="off" class="mb-3">
+    <h1 class="text-xl text-gray-800 mb-5">Se connecter</h1>
+    <form action="" method="post" novalidate class="mb-3">
         {{ form.csrf_token }}
         <div class="mb-3">
             {{ form.email.label(class="mb-1 block text-gray-800") }}
@@ -22,26 +22,16 @@
                 {% endfor %}
             {% endif %}
         </div>
-        <div class="mb-3">
-            {{ form.password_confirm.label(class="mb-1 block text-gray-800") }}
-            {{ form.password_confirm(class="w-full rounded p-4 focus:outline-none focus:ring focus:ring-gray-200 focus:ring-opacity-50") }}
-            {% if form.password_confirm.errors %}
-                {% for error in form.password_confirm.errors %}
-                    <span class="block text-sm text-red-500 mt-1">{{ error }}</span>
-                {% endfor %}
-            {% endif %}
+        <div class="mb-3 flex items-center space-x-2">
+            {{ form.remember }}
+            {{ form.remember.label(class="text-gray-800") }}
         </div>
         <div class="mb-3">
-            {{ form.role(class="flex space-x-4") }}
-            {% if form.role.errors %}
-                {% for error in form.role.errors %}
-                    <span class="block text-sm text-red-500 mt-1">{{ error }}</span>
-                {% endfor %}
-            {% endif %}
-        </div>
-        <div>
             {{ form.submit(class="rounded p-4 w-full bg-slate-200 cursor-pointer hover:bg-slate-300") }}
         </div>
     </form>
-    <a href="{{ url_for('auth.login') }}" class="text-blue-500 hover:underline">J'ai déjà un compte</a>
+    <div class="flex justify-between">
+        <a href="{{ url_for('auth.register') }}" class="text-blue-500 hover:underline">Je n'ai pas de compte</a>
+        <a href="#" class="text-blue-500 hover:underline">J'ai perdu mon mot de passe</a>
+    </div>
 {% endblock %}
