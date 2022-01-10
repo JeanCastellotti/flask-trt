@@ -53,3 +53,31 @@ class Administrator(User):
 
     __mapper_args__ = {"polymorphic_identity": "administrator"}
 
+
+class Job(db.Model):
+    __tablename__ = "jobs"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    place = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    is_active = db.Column(db.Boolean, default=False)
+    # candidates = db.relationship("Candidate", secondary="Application", back_populates="jobs")
+    applications = db.relationship("Application")
+
+
+# applications = db.Table(
+#     "applications", 
+#     db.Column("job_id", db.Integer, db.ForeignKey("jobs.id"), primary_key=True),
+#     db.Column("user_id"), db.Integer, db.ForeignKey("users.id", primary_key=True),
+#     db.Column("")
+
+
+class Application(db.Model):
+    __tablename__ = "applications"
+    id = db.Column(db.Integer, primary_key=True)
+    job_id = db.Column(db.Integer, db.ForeignKey("jobs.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    is_active = db.Column(db.Boolean, default=False)
+    candidate = db.relationship("Candidate")
+
+
