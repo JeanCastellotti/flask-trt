@@ -1,0 +1,50 @@
+{% extends "admin/base.html" %}
+
+{% block table %}
+    <table class="w-full">
+        <thead>
+            <tr class="bg-gray-300 text-left">
+                <th class="px-4 py-2 font-normal">Société</th>
+                <th class="px-4 py-2 font-normal">Email</th>
+                <th class="px-4 py-2 font-normal">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for recruiter in recruiters %}
+                <tr class="text-gray-400 border-b">
+                    <td class="px-4 py-2">{{ recruiter.company if recruiter.company else "-" }}</td>
+                    <td class="px-4 py-2">{{ recruiter.email }}</td>
+                    <td class="px-4 py-2 flex space-x-2">
+                        {% if recruiter.is_active %}
+                            <button 
+                                @click="deactivate"
+                                data-user="{{ recruiter.id }}"
+                                class="flex-1 rounded px-3 py-1 text-white bg-yellow-500 text-sm hover:bg-yellow-600 focus:outline-none focus:ring focus:ring-yellow-600 focus:ring-opacity-50">
+                                Désactiver
+                            </button>
+                        {% else %}
+                            <button 
+                                @click="activate"
+                                data-user="{{ recruiter.id }}"
+                                class="flex-1 rounded px-3 py-1 text-white bg-blue-500 text-sm hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-600 focus:ring-opacity-50">
+                                Activer
+                            </button>
+                        {% endif %}
+                        {% if current_user.role == "administrator" %}
+                            <button 
+                                @click="deleteUser"
+                                data-user="{{ recruiter.id }}"
+                                class="flex-1 rounded px-3 py-1 text-white bg-red-500 text-sm hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-600 focus:ring-opacity-50">
+                                Supprimer
+                            </button>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4" class="text-center py-2 text-gray-500">Aucun recruteur</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
