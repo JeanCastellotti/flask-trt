@@ -24,9 +24,13 @@ def create_app(config=Config):
     login_manager.init_app(app)
 
     from app.auth.routes import auth
+    from app.jobs.routes import jobs
     from app.main.routes import main
+    from app.admin.routes import admin
 
     app.register_blueprint(auth)
     app.register_blueprint(main)
+    app.register_blueprint(jobs)
+    app.register_blueprint(admin)
 
     return app
