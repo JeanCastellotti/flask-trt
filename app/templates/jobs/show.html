@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="pb-5 mb-5 border-b flex items-center justify-between">
+        <h1 class="text-xl text-gray-800">{{ job.title }}</h1>
+        <div class="text-sm text-gray-500 flex items-center space-x-6">
+            <div class="space-x-1">
+                <i class="fas fa-money-bill-wave"></i>
+                <span>{{ job.salary }}</span>
+            </div>
+            <div class="space-x-1">
+                <i class="fas fa-map-marker"></i>
+                <span>{{ job.place|capitalize }}</span>
+            </div>
+            <div class="space-x-1">
+                <i class="fas fa-calendar"></i>
+                <span>{{ job.created_at.strftime("%d-%m-%Y") }}</span>
+            </div>
+        </div>
+    </div>
+    <p class="whitespace-pre-wrap text-gray-800">{{ job.description }}</p>
+    {% if current_user.role == "candidate" %}
+        <button 
+            @click="open"
+            data-next="/apply/jobs/{{ job.id }}"
+            data-message="Voulez-vous vraiment postuler à cette annonce ?"
+            class="rounded bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-600 focus:ring-opacity-50 mt-5">
+                Postuler à cette annonce
+        </button>
+    {% endif %}
+{% endblock %}
+
+{% block javascript %}
+    <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
+{% endblock %}
