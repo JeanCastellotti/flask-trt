@@ -23,6 +23,16 @@
             {% endif %}
         </div>
         <div class="mb-3">
+            {{ form.salary.label(class="mb-1 block text-gray-800") }}
+            {{ form.salary(class="w-full rounded p-4 focus:outline-none focus:ring focus:ring-gray-200 focus:ring-opacity-50") }}
+            {% if form.salary.errors %}
+                {% for error in form.salary.errors %}
+                    <span class="inline-block text-sm text-red-500 mt-1">{{ error }}</span>
+                {% endfor %}
+            {% else %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
             {{ form.description.label(class="mb-1 block text-gray-800") }}
             {{ form.description(class="w-full rounded p-4 focus:outline-none focus:ring focus:ring-gray-200 focus:ring-opacity-50 h-96 resize-none") }}
             {% if form.description.errors %}
@@ -31,7 +41,7 @@
                 {% endfor %}
             {% endif %}
         </div>
-        <div class="mb-3">
+        <div>
             {{ form.submit(class="rounded p-4 w-full bg-slate-200 cursor-pointer hover:bg-slate-300") }}
         </div>
     </form>
