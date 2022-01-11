@@ -4,6 +4,8 @@ document.addEventListener('alpine:init', () => {
         init() {
             const page = location.href.split('/').at(-1)
 
+            if (!page) return
+
             switch (page) {
                 case '':
                 case 'candidates':
@@ -14,6 +16,9 @@ document.addEventListener('alpine:init', () => {
                     break;
                 case 'consultants':
                     this.activeTab = 'tab3'
+                    break;
+                case 'jobs':
+                    this.activeTab = 'tab4'
                     break;
             }
         }

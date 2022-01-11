@@ -1,34 +1,36 @@
 document.addEventListener('alpine:init', () => {
     Alpine.data('modal', () => ({
         visible: false,
-        user: null,
+        item: null,
+        type: null,
         action: null,
-        message: null,
-        open(message) {
-            this.message = message
+        open() {
             this.visible = true
         },
         close() {
             this.visible = false
-            this.user = null
+            this.item = null
         },
         activate(e) {
-            this.user = e.target.dataset.user
-            this.open("Voulez-vous vraiment activer cet utilisateur ?")
+            this.item = e.target.dataset.id
+            this.type = e.target.dataset.type
             this.action = 'activate'
+            this.open()
         },
         deactivate(e) {
-            this.user = e.target.dataset.user
-            this.open("Voulez-vous vraiment désactiver cet utilisateur ?")
+            this.item = e.target.dataset.id
+            this.type = e.target.dataset.type
             this.action = 'deactivate'
+            this.open()
         },
-        deleteUser(e) {
-            this.user = e.target.dataset.user
-            this.open("Vous-vous vraiment supprimer cet utilisateur ?")
+        deleteItem(e) {
+            this.item = e.target.dataset.id
+            this.type = e.target.dataset.type
             this.action = 'delete'
+            this.open()
         },
         submit(e) {
-            e.target.action = `/admin/${this.action}/users/${this.user}`
+            e.target.action = `/admin/${this.action}/${this.type}s/${this.item}`
             e.target.submit()
         }
     }))

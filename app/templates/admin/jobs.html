@@ -4,41 +4,39 @@
     <table class="w-full">
         <thead>
             <tr class="bg-gray-300 text-left">
-                <th class="px-4 py-2 font-normal">Nom</th>
-                <th class="px-4 py-2 font-normal">Prénom</th>
-                <th class="px-4 py-2 font-normal">Email</th>
+                <th class="px-4 py-2 font-normal">Titre</th>
+                <th class="px-4 py-2 font-normal">Lieu</th>
                 <th class="px-4 py-2 font-normal">Actions</th>
             </tr>
         </thead>
         <tbody>
-            {% for candidate in candidates %}
+            {% for job in jobs %}
                 <tr class="text-gray-400 border-b">
-                    <td class="px-4 py-2">{{ candidate.first_name if candidate.first_name else "-" }}</td>
-                    <td class="px-4 py-2">{{ candidate.last_name if candidate.last_name else "-" }}</td>
-                    <td class="px-4 py-2">{{ candidate.email }}</td>
+                    <td class="px-4 py-2">{{ job.title }}</td>
+                    <td class="px-4 py-2">{{ job.place }}</td>
                     <td class="px-4 py-2 flex space-x-2">
-                        {% if candidate.is_active %}
+                        {% if job.is_active %}
                             <button 
                                 @click="deactivate"
-                                data-type="user"
-                                data-id="{{ candidate.id }}"
+                                data-type="job"
+                                data-id="{{ job.id }}"
                                 class="flex-1 rounded px-3 py-1 text-white bg-yellow-500 text-sm hover:bg-yellow-600 focus:outline-none focus:ring focus:ring-yellow-600 focus:ring-opacity-50">
                                 Désactiver
                             </button>
                         {% else %}
                             <button 
                                 @click="activate"
-                                data-type="user"
-                                data-id="{{ candidate.id }}"
+                                data-type="job"
+                                data-id="{{ job.id }}"
                                 class="flex-1 rounded px-3 py-1 text-white bg-blue-500 text-sm hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-600 focus:ring-opacity-50">
                                 Activer
                             </button>
                         {% endif %}
                         {% if current_user.role == "administrator" %}
                             <button 
-                                @click="deleteUser"
-                                data-type="user"
-                                data-id="{{ candidate.id }}"
+                                @click="deleteItem"
+                                data-type="job"
+                                data-id="{{ job.id }}"
                                 class="flex-1 rounded px-3 py-1 text-white bg-red-500 text-sm hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-600 focus:ring-opacity-50">
                                 Supprimer
                             </button>
@@ -47,7 +45,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="4" class="text-center py-2 text-gray-500">Aucun candidat</td>
+                    <td colspan="4" class="text-center py-2 text-gray-500">Aucune annonce</td>
                 </tr>
             {% endfor %}
         </tbody>
