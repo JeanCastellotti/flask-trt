@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="text-xl text-gray-800 mb-5">Publier une annonce</h1>
+    <form action="" method="post" novalidate>
+        {{ form.csrf_token }}
+        <div class="mb-3">
+            {{ form.title.label(class="mb-1 block text-gray-800") }}
+            {{ form.title(class="w-full rounded p-4 focus:outline-none focus:ring focus:ring-gray-200 focus:ring-opacity-50") }}
+            {% if form.title.errors %}
+                {% for error in form.title.errors %}
+                    <span class="inline-block text-sm text-red-500 mt-1">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.place.label(class="mb-1 block text-gray-800") }}
+            {{ form.place(class="w-full rounded p-4 focus:outline-none focus:ring focus:ring-gray-200 focus:ring-opacity-50") }}
+            {% if form.place.errors %}
+                {% for error in form.place.errors %}
+                    <span class="inline-block text-sm text-red-500 mt-1">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.description.label(class="mb-1 block text-gray-800") }}
+            {{ form.description(class="w-full rounded p-4 focus:outline-none focus:ring focus:ring-gray-200 focus:ring-opacity-50 h-96 resize-none") }}
+            {% if form.description.errors %}
+                {% for error in form.description.errors %}
+                    <span class="inline-block text-sm text-red-500 mt-1">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.submit(class="rounded p-4 w-full bg-slate-200 cursor-pointer hover:bg-slate-300") }}
+        </div>
+    </form>
+{% endblock %}
