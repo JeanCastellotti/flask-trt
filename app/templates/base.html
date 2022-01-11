@@ -13,7 +13,7 @@
             crossorigin="anonymous">
         <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     </head>
-    <body class="bg-gray-100">
+    <body class="bg-gray-100 pb-3" :class="{'overflow-hidden': visible}" x-data="modal">
         <header class="bg-slate-200 mb-5">
             <div class="max-w-screen-md mx-auto py-4 flex justify-between items-center">
                 <div class="text-2xl text-gray-800">TRT Conseil</div>
@@ -26,7 +26,7 @@
                         {% if current_user.role in ["consultant", "administrator"] %}
                             <a href="{{ url_for('admin.candidates') }}" class="hover:text-gray-800">Gérer</a>
                         {% else %}
-                            <a href="#" class="hover:text-gray-800">Mon compte</a>
+                            <a href="{{ url_for('account.informations') }}" class="hover:text-gray-800">Mon compte</a>
                         {% endif %}
                         <a href="{{ url_for('auth.logout') }}" class="hover:text-gray-800">Se déconnecter</a>
                     {% else %}
@@ -61,6 +61,19 @@
             {% endwith %}
             {% block content %}{% endblock %}
         </div>
-        {% block javascript %}{% endblock %}
+        <div x-show="visible" class="bg-gray-800 bg-opacity-60 flex fixed inset-0" x-cloak>
+            <div class="rounded bg-white p-6 m-auto max-w-screen-sm" @click.away="close">
+                <p x-text="message"></p>
+                <div class="border-t pt-6 mt-6 flex justify-end space-x-2">
+                    <form method="POST" @submit.prevent="submit">
+                        <button class="rounded px-3 py-2 text-white bg-blue-500">Confirmer</button>
+                    </form>
+                    <button class="rounded px-3 py-2 text-white bg-red-500" @click="close">Annuler</button>
+                </div>
+            </div>
+        </div>
+        {% block javascript %}
+            <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
+        {% endblock %}
     </body>
 </html>
