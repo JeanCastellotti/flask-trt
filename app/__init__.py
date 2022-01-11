@@ -27,10 +27,12 @@ def create_app(config=Config):
     from app.jobs.routes import jobs
     from app.main.routes import main
     from app.admin.routes import admin
+    from app.account.routes import account
 
     app.register_blueprint(auth)
     app.register_blueprint(main)
     app.register_blueprint(jobs)
     app.register_blueprint(admin)
+    app.register_blueprint(account)
 
     return app
