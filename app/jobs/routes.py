@@ -5,11 +5,11 @@ from app.models import Job
 
 jobs = Blueprint("jobs", __name__, url_prefix="/jobs")
 
-@jobs.route("/create")
+@jobs.route("/create", methods=["GET", "POST"])
 def create():
     form = CreateJobForm()
     if form.validate_on_submit():
-        job = Job(title=form.title.data, description=form.description.data)
+        job = Job(title=form.title.data, place=form.place.data, description=form.description.data)
         db.session.add(job)
         db.session.commit()
         flash("Votre annonce a été créée.", "success")
