@@ -14,4 +14,4 @@ def create():
         db.session.commit()
         flash("Votre annonce a été créée.", "success")
         return redirect(url_for("main.home"))
-    return render_template("job-create.html", form=form)
+    return render_template("jobs/create.html", form=form)
