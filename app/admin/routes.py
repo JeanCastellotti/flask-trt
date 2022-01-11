@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, abort, flash, redirect, url_for
 from flask_login import login_required, current_user
-from app.models import User, Candidate, Recruiter, Consultant, Administrator
+from app.models import User, Candidate, Recruiter, Consultant, Administrator, Job
 from app import db, bcrypt
 from .forms import CreateUserForm
 
@@ -35,6 +35,14 @@ def consultants():
     return render_template("admin/consultants.html", consultants=consultants)
 
 
+@admin.route("/jobs")
+@login_required
+def jobs():
+    roles_required("consultant", "administrator")
+    jobs = Job.query.order_by(Job.id.desc()).all()
+    return render_template("admin/jobs.html", jobs=jobs)
+
+
 @admin.route("/activate/users/<int:id>", methods=["POST"])
 @login_required
 def activate_user(id):
@@ -53,6 +61,7 @@ def activate_user(id):
         next_page = "admin.recruiters"
     flash(f"Le {role} a bien été activé.", "success")
     return redirect(url_for(next_page))
+
 
 @admin.route("/deactivate/users/<int:id>", methods=["POST"])
 @login_required
@@ -73,6 +82,7 @@ def deactivate_user(id):
     flash(f"Le {role} a bien été désactivé.", "success")
     return redirect(url_for(next_page))
 
+
 @admin.route("/delete/users/<int:id>", methods=["POST"])
 @login_required
 def delete_user(id):
@@ -91,6 +101,45 @@ def delete_user(id):
     db.session.commit()
     flash(f"Le {role} a bien été supprimé.", "success")
     return redirect(url_for(next_page))
+
+
+@admin.route("/activate/jobs/<int:id>", methods=["POST"])
+@login_required
+def activate_job(id):
+    roles_required("consultant", "administrator")
+    job = Job.query.get_or_404(id)
+    if job.is_active:
+        flash("Cette annonce a déjà été activée.", "warning")
+        return redirect(url_for("admin.jobs"))
+    job.is_active = True
+    db.session.commit()
+    flash(f"L'annonce a bien été activée.", "success")
+    return redirect(url_for("admin.jobs"))
+
+
+@admin.route("/deactivate/jobs/<int:id>", methods=["POST"])
+@login_required
+def deactivate_job(id):
+    roles_required("consultant", "administrator")
+    job = Job.query.get_or_404(id)
+    if not job.is_active:
+        flash("Cette annonce a déjà été désactivée.", "warning")
+        return redirect(url_for("admin.jobs"))
+    job.is_active = False
+    db.session.commit()
+    flash(f"L'annonce a bien été désactivée.", "success")
+    return redirect(url_for("admin.jobs"))
+
+
+@admin.route("/delete/jobs/<int:id>", methods=["POST"])
+@login_required
+def delete_job(id):
+    roles_required("consultant", "administrator")
+    job = Job.query.get_or_404(id)
+    db.session.delete(job)
+    db.session.commit()
+    flash(f"L'annonce a bien été supprimée.", "success")
+    return redirect(url_for("admin.jobs"))
 
 
 @admin.route("/create/consultant", methods=["GET", "POST"])
