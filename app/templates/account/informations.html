@@ -1,0 +1,87 @@
+{% extends "account/base.html" %}
+
+{% block account %}
+    <form action="" method="post" novalidate enctype="multipart/form-data">
+        {{ form.csrf_token }}
+        <div class="mb-3">
+            {{ form.email.label(class="mb-1 block text-gray-800") }}
+            {{ form.email(class="w-full rounded p-4 focus:outline-none focus:ring focus:ring-gray-200 focus:ring-opacity-50") }}
+            {% if form.email.errors %}
+                {% for error in form.email.errors %}
+                    <span class="inline-block text-sm text-red-500 mt-1">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+        {% if current_user.role == "candidate" %}
+            <div class="mb-3">
+                {{ form.first_name.label(class="mb-1 block text-gray-800") }}
+                {{ form.first_name(class="w-full rounded p-4 focus:outline-none focus:ring focus:ring-gray-200 focus:ring-opacity-50") }}
+                {% if form.first_name.errors %}
+                    {% for error in form.first_name.errors %}
+                        <span class="inline-block text-sm text-red-500 mt-1">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                {{ form.last_name.label(class="mb-1 block text-gray-800") }}
+                {{ form.last_name(class="w-full rounded p-4 focus:outline-none focus:ring focus:ring-gray-200 focus:ring-opacity-50") }}
+                {% if form.last_name.errors %}
+                    {% for error in form.last_name.errors %}
+                        <span class="inline-block text-sm text-red-500 mt-1">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                <div class="flex justify-between items-center">
+                    {{ form.resume_file.label(class="mb-1 block text-gray-800") }}
+                    {% if current_user.resume_file %}
+                        <div class="flex items-center space-x-2">
+                            <a 
+                                href="{{ url_for('static', filename='uploads/' + current_user.resume_file) }}" 
+                                class="text-blue-500 hover:underline text-sm">
+                                Consulter
+                            </a>
+                            <button 
+                                type="button"
+                                @click="open"
+                                data-next="{{ url_for('account.delete_resume') }}"
+                                data-message="Voulez-vous vraiment supprimer votre CV ?"
+                                class="rounded bg-red-500 text-white px-3 py-1 text-sm hover:bg-red-600 focus:outline-none">
+                                Supprimer
+                            </button>
+                        </div>
+                    {% else %}
+                    {% endif %}
+                </div>
+                {{ form.resume_file(class="w-full rounded p-4 focus:outline-none focus:ring focus:ring-gray-200 focus:ring-opacity-50 bg-white") }}
+                {% if form.resume_file.errors %}
+                    {% for error in form.resume_file.errors %}
+                        <span class="inline-block text-sm text-red-500 mt-1">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="mb-3">
+                {{ form.company.label(class="mb-1 block text-gray-800") }}
+                {{ form.company(class="w-full rounded p-4 focus:outline-none focus:ring focus:ring-gray-200 focus:ring-opacity-50") }}
+                {% if form.company.errors %}
+                    {% for error in form.company.errors %}
+                        <span class="inline-block text-sm text-red-500 mt-1">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                {{ form.address.label(class="mb-1 block text-gray-800") }}
+                {{ form.address(class="w-full rounded p-4 focus:outline-none focus:ring focus:ring-gray-200 focus:ring-opacity-50") }}
+                {% if form.address.errors %}
+                    {% for error in form.address.errors %}
+                        <span class="inline-block text-sm text-red-500 mt-1">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% endif %}        
+        <div class="mb-3">
+            {{ form.submit(class="rounded p-4 w-full bg-slate-200 cursor-pointer hover:bg-slate-300") }}
+        </div>
+    </form>
+{% endblock %}
