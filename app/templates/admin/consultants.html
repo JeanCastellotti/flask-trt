@@ -1,6 +1,6 @@
 {% extends "admin/base.html" %}
 
-{% block table %}
+{% block admin %}
     <table class="w-full">
         <thead>
             <tr class="bg-gray-300 text-left">
@@ -14,9 +14,9 @@
                     <td class="px-4 py-2">{{ consultant.email }}</td>
                     <td class="px-4 py-2 flex space-x-2">
                         <button 
-                            @click="deleteUser"
-                            data-type="user"
-                            data-id="{{ consultant.id }}"
+                            @click="open"
+                            data-next="/admin/delete/users/{{ consultant.id }}"
+                            data-message="Voulez-vous vraiment supprimer ce consultant ?"
                             class="flex-1 rounded px-3 py-1 text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-600 focus:ring-opacity-50">
                             Supprimer
                         </button>
