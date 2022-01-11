@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask_login import UserMixin
 from app import db, login_manager
 
@@ -60,6 +61,7 @@ class Job(db.Model):
     title = db.Column(db.String(255), nullable=False)
     place = db.Column(db.String(50), nullable=False)
     description = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=False)
     # candidates = db.relationship("Candidate", secondary="Application", back_populates="jobs")
     applications = db.relationship("Application")
