@@ -2,13 +2,14 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from .forms import UpdateAccountCandidateForm, UpdateAccountRecruiterForm
 from app import db
-from app.utils import save_file, delete_file
+from app.utils import save_file, delete_file, roles_required
 
 account = Blueprint("account", __name__, url_prefix="/account")
 
 
 @account.route("/informations", methods=["GET", "POST"])
 @login_required
+@roles_required("candidate", "recruiter")
 def informations():
     if current_user.role == "candidate":
         form = UpdateAccountCandidateForm()
@@ -39,16 +40,22 @@ def informations():
 
 
 @account.route("/jobs")
+@login_required
+@roles_required("recruiter")
 def jobs():
     return render_template("account/jobs.html")
 
 
 @account.route("/applications")
+@login_required
+@roles_required("candidate")
 def applications():
     return render_template("account/applications.html")
 
 
 @account.route("/delete_resume", methods=["POST"])
+@login_required
+@roles_required("candidate")
 def delete_resume():
     if not current_user.resume_file:
         flash("Vous n'avez pas téléchargé de CV.", "error")

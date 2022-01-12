@@ -1,6 +1,7 @@
 import os
 import secrets
-from flask import request, current_app as app
+from functools import wraps
+from flask import request, abort, current_app as app
 from flask_login import current_user
 from urllib.parse import urlparse, urljoin
 
@@ -25,3 +26,14 @@ def delete_file(file):
         file_path = os.path.join(app.root_path, 'static/uploads', file)
         if os.path.exists(file_path):
             os.remove(file_path)
+
+
+def roles_required(*roles):
+    def decorator(function):
+        @wraps(function)
+        def wrapper(*args, **kwargs):
+            if not current_user.role in roles:
+                return abort(401)
+            return function(*args, **kwargs)
+        return wrapper
+    return decorator

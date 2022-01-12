@@ -1,52 +1,57 @@
 from flask import Blueprint, render_template, abort, flash, redirect, url_for
 from flask_login import login_required, current_user
-from app.models import User, Candidate, Recruiter, Consultant, Administrator, Job
+from app.models import User, Candidate, Recruiter, Consultant, Administrator, Job, Application
 from app import db, bcrypt
+from app.utils import roles_required
 from .forms import CreateUserForm
 
 admin = Blueprint("admin", __name__, url_prefix="/admin")
 
-def roles_required(*args):
-    if not current_user.role in args:
-        return abort(403)
 
-@admin.route("/")
 @admin.route("/candidates")
 @login_required
+@roles_required("consultant", "administrator")
 def candidates():
-    roles_required("consultant", "administrator")
     candidates = Candidate.query.order_by(User.id.desc()).all()
     return render_template("admin/candidates.html", candidates=candidates)
 
 
 @admin.route("/recruiters")
 @login_required
+@roles_required("consultant", "administrator")
 def recruiters():
-    roles_required("consultant", "administrator")
     recruiters = Recruiter.query.order_by(User.id.desc()).all()
     return render_template("admin/recruiters.html", recruiters=recruiters)
 
 
 @admin.route("/consultants")
 @login_required
+@roles_required("administrator")
 def consultants():
-    roles_required("administrator")
     consultants = Consultant.query.order_by(User.id.desc()).all()
     return render_template("admin/consultants.html", consultants=consultants)
 
 
 @admin.route("/jobs")
 @login_required
+@roles_required("consultant", "administrator")
 def jobs():
-    roles_required("consultant", "administrator")
     jobs = Job.query.order_by(Job.id.desc()).all()
     return render_template("admin/jobs.html", jobs=jobs)
 
 
+@admin.route("/applications")
+@login_required
+@roles_required("consultant", "administrator")
+def applications():
+    applications = Application.query.order_by(Application.id.desc()).all()
+    return render_template("admin/applications.html", applications=applications)
+
+
 @admin.route("/activate/users/<int:id>", methods=["POST"])
 @login_required
+@roles_required("consultant", "administrator")
 def activate_user(id):
-    roles_required("consultant", "administrator")
     user = User.query.get_or_404(id)
     if user.is_active:
         flash("Le compte de cet utilisateur a déjà été activé.", "warning")
@@ -65,8 +70,8 @@ def activate_user(id):
 
 @admin.route("/deactivate/users/<int:id>", methods=["POST"])
 @login_required
+@roles_required("consultant", "administrator")
 def deactivate_user(id):
-    roles_required("consultant", "administrator")
     user = User.query.get_or_404(id)
     if not user.is_active:
         flash("Le compte de cet utilisateur a déjà été désactivé.", "warning")
@@ -85,8 +90,8 @@ def deactivate_user(id):
 
 @admin.route("/delete/users/<int:id>", methods=["POST"])
 @login_required
+@roles_required("administrator")
 def delete_user(id):
-    roles_required("consultant", "administrator")
     user = User.query.get_or_404(id)
     if user.role == "candidate":
         role = "candidat"
@@ -105,8 +110,8 @@ def delete_user(id):
 
 @admin.route("/activate/jobs/<int:id>", methods=["POST"])
 @login_required
+@roles_required("consultant", "administrator")
 def activate_job(id):
-    roles_required("consultant", "administrator")
     job = Job.query.get_or_404(id)
     if job.is_active:
         flash("Cette annonce a déjà été activée.", "warning")
@@ -119,8 +124,8 @@ def activate_job(id):
 
 @admin.route("/deactivate/jobs/<int:id>", methods=["POST"])
 @login_required
+@roles_required("consultant", "administrator")
 def deactivate_job(id):
-    roles_required("consultant", "administrator")
     job = Job.query.get_or_404(id)
     if not job.is_active:
         flash("Cette annonce a déjà été désactivée.", "warning")
@@ -133,8 +138,8 @@ def deactivate_job(id):
 
 @admin.route("/delete/jobs/<int:id>", methods=["POST"])
 @login_required
+@roles_required("administrator")
 def delete_job(id):
-    roles_required("consultant", "administrator")
     job = Job.query.get_or_404(id)
     db.session.delete(job)
     db.session.commit()
@@ -144,8 +149,8 @@ def delete_job(id):
 
 @admin.route("/create/consultant", methods=["GET", "POST"])
 @login_required
+@roles_required("administrator")
 def create_consultant():
-    roles_required("administrator")
     form = CreateUserForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
@@ -176,34 +181,3 @@ def create_administrator():
         flash("L'administrateur a bien été créé", "success")
         return redirect("main.home")
     return render_template("admin/create-administrator.html", form=form)
-
-
-# @admin.route("/create/<string:role>", methods=["GET", "POST"])
-# def create_user(role):
-#     if not role in ["consultant", "administrator"]:
-#         return abort(400)
-#     if role == "administrator":
-#         admin = Administrator.query.first()
-#         if admin:
-#             flash("Un administrateur existe déjà.", "error")
-#             return redirect(url_for("main.home"))
-#     if role == "consultant" and (not current_user.is_authenticated or current_user.role != "administrator"):
-#         return abort(403)
-#     form = CreateUserForm()
-#     if form.validate_on_submit():
-#         hashed_password = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
-#         if role == "consultant":
-#             new_user = Consultant(email=form.email.data, password=hashed_password)
-#             message = "Le consultant a bien été créé."
-#         elif role == "administrator":
-#             new_user = Administrator(email=form.email.data, password=hashed_password)
-#             message = "L'administrateur a bien été créé."
-#         try:
-#             db.session.add(new_user)
-#             db.session.commit()
-#         except:
-#             flash("Un problème est survenu.", "error")
-#             return redirect(url_for("users.create"))
-#         flash(message, "success")
-#         return redirect(url_for("main.home"))
-#     return render_template("create-user.html", form=form, role=role)
