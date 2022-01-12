@@ -9,6 +9,7 @@ jobs = Blueprint("jobs", __name__, url_prefix="/jobs")
 
 @jobs.route("/create", methods=["GET", "POST"])
 @login_required
+@roles_required("recruiter")
 def create():
     if not current_user.company or not current_user.address:
         flash("Vous devez compléter votre profil avant de pouvoir publier une annonce.", "warning")
@@ -30,6 +31,8 @@ def create():
 @jobs.route("/<int:id>")
 def show(id):
     job = Job.query.get_or_404(id)
+    if not job.is_active and not current_user.is_anonymous and current_user.role == "candidate":
+        return abort(403)
     application = Application.query.filter_by(job_id=job.id, user_id=current_user.id).first()
     return render_template("jobs/show.html", job=job, application=application)
 
@@ -39,7 +42,7 @@ def show(id):
 @roles_required("candidate")
 def apply(id):
     if not current_user.resume_file:
-        flash("Vous devez télécharger un CV avant de pouvoir postuler.", "error")
+        flash("Vous devez télécharger un CV avant de pouvoir postuler.", "warning")
         return redirect(url_for("account.informations"))
     job = Job.query.get_or_404(id)
     application = Application.query.filter_by(job_id=job.id, user_id=current_user.id).first()
