@@ -8,21 +8,21 @@
         </span>
     </h1>
     <ul class="border-gray-300 border-b flex space-x-2 text-gray-600" x-data="tabs">
-        <li class="p-2 px-4 bg-gray-200 rounded-t hover:bg-gray-300" :class="{'!bg-gray-300': activeTab === 'candidates'}">
+        <li class="p-2 px-4 bg-gray-200 rounded-t hover:bg-gray-300" :class="{'!bg-gray-300': isActive('candidates')}">
             <a href="{{ url_for('admin.candidates') }}">Candidats</a>
         </li>
-        <li class="p-2 px-4 bg-gray-200 rounded-t hover:bg-gray-300" :class="{'!bg-gray-300': activeTab === 'recruiters'}">
+        <li class="p-2 px-4 bg-gray-200 rounded-t hover:bg-gray-300" :class="{'!bg-gray-300': isActive('recruiters')}">
             <a href="{{ url_for('admin.recruiters') }}">Recruteurs</a>
         </li>
         {% if current_user.role == "administrator" %}
-            <li class="p-2 px-4 bg-gray-200 rounded-t hover:bg-gray-300" :class="{'!bg-gray-300': activeTab === 'consultants'}">
+            <li class="p-2 px-4 bg-gray-200 rounded-t hover:bg-gray-300" :class="{'!bg-gray-300': isActive('consultants')}">
                 <a href="{{ url_for('admin.consultants') }}">Consultants</a>
             </li>
         {% endif %}
-        <li class="p-2 px-4 bg-gray-200 rounded-t hover:bg-gray-300" :class="{'!bg-gray-300': activeTab === 'jobs'}">
+        <li class="p-2 px-4 bg-gray-200 rounded-t hover:bg-gray-300" :class="{'!bg-gray-300': isActive('jobs')}">
             <a href="{{ url_for('admin.jobs') }}">Annonces</a>
         </li>
-        <li class="p-2 px-4 bg-gray-200 rounded-t hover:bg-gray-300">
+        <li class="p-2 px-4 bg-gray-200 rounded-t hover:bg-gray-300" :class="{'!bg-gray-300': isActive('applications')}">
             <a href="{{ url_for('admin.applications') }}">Candidatures</a>
         </li>
     </ul>
