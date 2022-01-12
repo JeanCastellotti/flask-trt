@@ -1,7 +1,7 @@
 {% extends "account/base.html" %}
 
 {% block account %}
-    <form action="" method="post" novalidate enctype="multipart/form-data">
+    <form method="post" novalidate enctype="multipart/form-data" class="mt-5">
         {{ form.csrf_token }}
         <div class="mb-3">
             {{ form.email.label(class="mb-1 block text-gray-800") }}
@@ -35,7 +35,7 @@
                 <div class="flex justify-between items-center">
                     {{ form.resume_file.label(class="mb-1 block text-gray-800") }}
                     {% if current_user.resume_file %}
-                        <div class="flex items-center space-x-2">
+                        <div class="flex items-center space-x-4">
                             <a 
                                 href="{{ url_for('static', filename='uploads/' + current_user.resume_file) }}" 
                                 class="text-blue-500 hover:underline text-sm">
@@ -46,7 +46,7 @@
                                 @click="open"
                                 data-next="{{ url_for('account.delete_resume') }}"
                                 data-message="Voulez-vous vraiment supprimer votre CV ?"
-                                class="rounded bg-red-500 text-white px-3 py-1 text-sm hover:bg-red-600 focus:outline-none">
+                                class="rounded text-red-500 text-sm hover:underline focus:outline-none">
                                 Supprimer
                             </button>
                         </div>

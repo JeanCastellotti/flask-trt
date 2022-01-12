@@ -1,22 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1 class="text-xl text-gray-800 mb-5 flex justify-between items-center">
+    <h1 class="text-xl text-gray-800 flex justify-between items-center mb-5">
         <span>Mon compte</span>
         <span class="text-sm text-gray-400">
             Connecté en tant que {{ current_user.email }} ({{ current_user.role|capitalize }})
         </span>
     </h1>
-    <ul class="border-gray-300 border-b flex space-x-2 text-gray-600 mb-5" x-data="tabs">
-        <li class="p-2 px-4 bg-gray-200 rounded-t hover:bg-gray-300" :class="{'!bg-gray-300': activeTab === 'informations'}">
+    <ul class="border-gray-300 border-b flex space-x-2 text-gray-600" x-data="tabs">
+        <li class="p-2 px-4 bg-gray-200 rounded-t hover:bg-gray-300" :class="{'!bg-gray-300': isActive('informations')}">
             <a href="{{ url_for('account.informations') }}">Mes informations</a>
         </li>
         {% if current_user.role == "recruiter" %}
-            <li class="p-2 px-4 bg-gray-200 rounded-t hover:bg-gray-300" :class="{'!bg-gray-300': activeTab === 'jobs'}">
+            <li class="p-2 px-4 bg-gray-200 rounded-t hover:bg-gray-300" :class="{'!bg-gray-300': isActive('jobs')}">
                 <a href="{{ url_for('account.jobs') }}">Mes annonces</a>
             </li>
         {% else %}
-        <li class="p-2 px-4 bg-gray-200 rounded-t hover:bg-gray-300" :class="{'!bg-gray-300': activeTab === 'applications'}">
+        <li class="p-2 px-4 bg-gray-200 rounded-t hover:bg-gray-300" :class="{'!bg-gray-300': isActive('applications')}">
             <a href="{{ url_for('account.applications') }}">Mes candidatures</a>
         </li>
         {% endif %}
