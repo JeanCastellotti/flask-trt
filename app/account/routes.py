@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from .forms import UpdateAccountCandidateForm, UpdateAccountRecruiterForm
 from app import db
 from app.utils import save_file, delete_file, roles_required
+from app.models import Application, Job
 
 account = Blueprint("account", __name__, url_prefix="/account")
 
@@ -43,14 +44,16 @@ def informations():
 @login_required
 @roles_required("recruiter")
 def jobs():
-    return render_template("account/jobs.html")
+    jobs = Job.query.filter_by(recruiter=current_user).all()
+    return render_template("account/jobs.html", jobs=jobs)
 
 
 @account.route("/applications")
 @login_required
 @roles_required("candidate")
 def applications():
-    return render_template("account/applications.html")
+    applications = Application.query.filter_by(candidate=current_user).all()
+    return render_template("account/applications.html", applications=applications)
 
 
 @account.route("/delete_resume", methods=["POST"])
@@ -65,3 +68,14 @@ def delete_resume():
     db.session.commit()
     flash("Votre CV a bien été supprimé", "success")
     return redirect(url_for("account.informations"))
+
+
+@account.route("/jobs/<int:id>/delete", methods=["POST"])
+@login_required
+@roles_required("recruiter")
+def delete(id):
+    job = Job.query.get_or_404(id)
+    db.session.delete(job)
+    db.session.commit()
+    flash("Votre annonce a bien été supprimée", "success")
+    return redirect(url_for("account.jobs"))
