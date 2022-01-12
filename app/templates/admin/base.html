@@ -23,7 +23,7 @@
             <a href="{{ url_for('admin.jobs') }}">Annonces</a>
         </li>
         <li class="p-2 px-4 bg-gray-200 rounded-t hover:bg-gray-300">
-            <a href="#">Candidatures</a>
+            <a href="{{ url_for('admin.applications') }}">Candidatures</a>
         </li>
     </ul>
     {% block admin %}{% endblock %}

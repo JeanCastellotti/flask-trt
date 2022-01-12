@@ -27,6 +27,7 @@ class Candidate(User):
     last_name = db.Column(db.String(50))
     resume_file = db.Column(db.String(50))
     is_active = db.Column(db.Boolean, default=False)
+    applications = db.relationship("Application", back_populates="candidate")
 
     __mapper_args__ = {"polymorphic_identity": "candidate"}
 
@@ -37,6 +38,7 @@ class Recruiter(User):
     company = db.Column(db.String(50))
     address = db.Column(db.String(255))
     is_active = db.Column(db.Boolean, default=False)
+    jobs = db.relationship("Job", back_populates="recruiter")
 
     __mapper_args__ = {"polymorphic_identity": "recruiter"}
 
@@ -62,25 +64,19 @@ class Job(db.Model):
     place = db.Column(db.String(50), nullable=False)
     salary = db.Column(db.Integer, nullable=False)
     description = db.Column(db.Text, nullable=False)
+    recruiter_id = db.Column(db.Integer, db.ForeignKey("recruiters.user_id"), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=False)
-    # candidates = db.relationship("Candidate", secondary="Application", back_populates="jobs")
-    applications = db.relationship("Application")
-
-
-# applications = db.Table(
-#     "applications", 
-#     db.Column("job_id", db.Integer, db.ForeignKey("jobs.id"), primary_key=True),
-#     db.Column("user_id"), db.Integer, db.ForeignKey("users.id", primary_key=True),
-#     db.Column("")
+    applications = db.relationship("Application", back_populates="job")
+    recruiter = db.relationship("Recruiter", back_populates="jobs")
 
 
 class Application(db.Model):
     __tablename__ = "applications"
-    id = db.Column(db.Integer, primary_key=True)
-    job_id = db.Column(db.Integer, db.ForeignKey("jobs.id"))
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    job_id = db.Column(db.Integer, db.ForeignKey("jobs.id"), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
     is_active = db.Column(db.Boolean, default=False)
-    candidate = db.relationship("Candidate")
+    job = db.relationship("Job", back_populates="applications")
+    candidate = db.relationship("Candidate", back_populates="applications")
 
 

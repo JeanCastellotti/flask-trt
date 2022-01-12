@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, flash, redirect, url_for
+from flask import Blueprint, render_template, flash, redirect, url_for, abort
 from flask_login import login_required, current_user
 from .forms import CreateJobForm
 from app import db
-from app.models import Job
+from app.models import Job, Application
+from app.utils import roles_required
 
 jobs = Blueprint("jobs", __name__, url_prefix="/jobs")
 
@@ -15,9 +16,10 @@ def create():
     form = CreateJobForm()
     if form.validate_on_submit():
         job = Job(title=form.title.data.strip(), 
-                  salary=form.salary.data.strip(), 
+                  salary=form.salary.data, 
                   place=form.place.data.strip(), 
-                  description=form.description.data.strip())
+                  description=form.description.data.strip(),
+                  recruiter=current_user)
         db.session.add(job)
         db.session.commit()
         flash("Votre annonce a été créée.", "success")
@@ -28,4 +30,24 @@ def create():
 @jobs.route("/<int:id>")
 def show(id):
     job = Job.query.get_or_404(id)
-    return render_template("jobs/show.html", job=job)
+    application = Application.query.filter_by(job_id=job.id, user_id=current_user.id).first()
+    return render_template("jobs/show.html", job=job, application=application)
+
+
+@jobs.route("/<int:id>/apply", methods=["POST"])
+@login_required
+@roles_required("candidate")
+def apply(id):
+    if not current_user.resume_file:
+        flash("Vous devez télécharger un CV avant de pouvoir postuler.", "error")
+        return redirect(url_for("account.informations"))
+    job = Job.query.get_or_404(id)
+    application = Application.query.filter_by(job_id=job.id, user_id=current_user.id).first()
+    if application:
+        flash("Vous avez déjà postulé à cette annonce.", "error")
+        return redirect(url_for("jobs.show", id=job.id))
+    new_application = Application(job_id=job.id, user_id=current_user.id)
+    db.session.add(new_application)
+    db.session.commit()
+    flash("Votre candidature a été soumise.", "success")
+    return redirect(url_for("jobs.show", id=job.id))

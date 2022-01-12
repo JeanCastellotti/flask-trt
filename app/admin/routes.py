@@ -44,7 +44,7 @@ def jobs():
 @login_required
 @roles_required("consultant", "administrator")
 def applications():
-    applications = Application.query.order_by(Application.id.desc()).all()
+    applications = Application.query.order_by().all()
     return render_template("admin/applications.html", applications=applications)
 
 
@@ -181,3 +181,42 @@ def create_administrator():
         flash("L'administrateur a bien été créé", "success")
         return redirect("main.home")
     return render_template("admin/create-administrator.html", form=form)
+
+
+@admin.route("/activate/applications/<int:job_id>/<int:user_id>", methods=["POST"])
+@login_required
+@roles_required("consultant", "administrator")
+def activate_application(job_id, user_id):
+    application = Application.query.filter_by(job_id=job_id, user_id=user_id).first_or_404()
+    if application.is_active:
+        flash("Cette candidature a déjà été activée.", "warning")
+        return redirect(url_for("admin.applications"))
+    application.is_active = True
+    db.session.commit()
+    flash(f"La candidature a bien été activée.", "success")
+    return redirect(url_for("admin.applications"))
+
+
+@admin.route("/deactivate/applications/<int:job_id>/<int:user_id>", methods=["POST"])
+@login_required
+@roles_required("consultant", "administrator")
+def deactivate_application(job_id, user_id):
+    application = Application.query.filter_by(job_id=job_id, user_id=user_id).first_or_404()
+    if not application.is_active:
+        flash("Cette candidature a déjà été désactivée.", "warning")
+        return redirect(url_for("admin.applications"))
+    application.is_active = False
+    db.session.commit()
+    flash(f"La candidature a bien été désactivée.", "success")
+    return redirect(url_for("admin.applications"))
+
+
+@admin.route("/delete/applications/<int:job_id>/<int:user_id>", methods=["POST"])
+@login_required
+@roles_required("administrator")
+def delete_application(job_id, user_id):
+    application = Application.query.filter_by(job_id=job_id, user_id=user_id).first_or_404()
+    db.session.delete(application)
+    db.session.commit()
+    flash(f"La candidature a bien été supprimée.", "success")
+    return redirect(url_for("admin.applications"))
