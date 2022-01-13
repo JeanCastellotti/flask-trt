@@ -3,7 +3,9 @@ import secrets
 from functools import wraps
 from flask import request, abort, current_app as app
 from flask_login import current_user
+from flask_mail import Message
 from urllib.parse import urlparse, urljoin
+from app import mail
 
 def is_safe_url(url):
     ref_url = urlparse(request.host_url)
@@ -37,3 +39,17 @@ def roles_required(*roles):
             return function(*args, **kwargs)
         return wrapper
     return decorator
+
+
+def send_email(recruiter_email, file_path):
+    message = Message("Nouvelle candidature", sender="noreply@trtconseil.com", recipients=[recruiter_email])
+    message.body = f"""
+    Bonjour,
+
+    Vous avez une nouvelle candidature !
+
+    Veuillez trouver ci-joint le CV du candidat.
+    """
+    with app.open_resource(file_path) as fp:
+        message.attach('cv.pdf', 'application/pdf', fp.read())
+    mail.send(message)
