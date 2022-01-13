@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, abort
 from flask_login import login_required, current_user
 from .forms import UpdateAccountCandidateForm, UpdateAccountRecruiterForm
 from app import db
@@ -44,7 +44,8 @@ def informations():
 @login_required
 @roles_required("recruiter")
 def jobs():
-    jobs = Job.query.filter_by(recruiter=current_user).all()
+    page = request.args.get("page", 1, type=int)
+    jobs = Job.query.filter_by(recruiter=current_user).order_by(Job.id.desc()).paginate(page=page, per_page=5)
     return render_template("account/jobs.html", jobs=jobs)
 
 
@@ -52,29 +53,32 @@ def jobs():
 @login_required
 @roles_required("candidate")
 def applications():
-    applications = Application.query.filter_by(candidate=current_user).all()
+    page = request.args.get("page", 1, type=int)
+    applications = Application.query.filter_by(candidate=current_user).order_by(Application.created_at.desc()).paginate(page=page, per_page=5)
     return render_template("account/applications.html", applications=applications)
 
 
-@account.route("/delete_resume", methods=["POST"])
-@login_required
-@roles_required("candidate")
-def delete_resume():
-    if not current_user.resume_file:
-        flash("Vous n'avez pas téléchargé de CV.", "error")
-        return redirect(url_for("account.informations"))
-    delete_file(current_user.resume_file)
-    current_user.resume_file = None
-    db.session.commit()
-    flash("Votre CV a bien été supprimé", "success")
-    return redirect(url_for("account.informations"))
+# @account.route("/delete_resume", methods=["POST"])
+# @login_required
+# @roles_required("candidate")
+# def delete_resume():
+#     if not current_user.resume_file:
+#         flash("Vous n'avez pas téléchargé de CV.", "error")
+#         return redirect(url_for("account.informations"))
+#     delete_file(current_user.resume_file)
+#     current_user.resume_file = None
+#     db.session.commit()
+#     flash("Votre CV a bien été supprimé", "success")
+#     return redirect(url_for("account.informations"))
 
 
 @account.route("/jobs/<int:id>/delete", methods=["POST"])
 @login_required
 @roles_required("recruiter")
-def delete(id):
+def delete_job(id):
     job = Job.query.get_or_404(id)
+    if job.recruiter.id != current_user.id:
+        return abort(403)
     db.session.delete(job)
     db.session.commit()
     flash("Votre annonce a bien été supprimée", "success")
