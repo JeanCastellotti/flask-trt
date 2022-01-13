@@ -25,7 +25,7 @@
         </div>
     </div>
     <p class="whitespace-pre-wrap text-gray-800">{{ job.description }}</p>
-    {% if current_user.role == "candidate" and not application %}
+    {% if current_user.role == "candidate" and not job.applications|selectattr('user_id', 'equalto', current_user.id)|list %}
         <button 
             @click="open"
             data-next="/jobs/{{ job.id }}/apply"
