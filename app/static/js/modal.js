@@ -3,7 +3,9 @@ document.addEventListener('alpine:init', () => {
         visible: false,
         message: null,
         next: null,
+        sending: false,
         open(e) {
+            this.sending = false
             this.message = e.target.dataset.message
             this.next = e.target.dataset.next
             this.visible = true
@@ -14,6 +16,7 @@ document.addEventListener('alpine:init', () => {
             this.next = null
         },
         submit(e) {
+            this.sending = true
             e.target.action = this.next
             e.target.submit()
         }

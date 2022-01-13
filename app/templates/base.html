@@ -66,9 +66,19 @@
                 <p x-text="message"></p>
                 <div class="border-t pt-6 mt-6 flex justify-end space-x-2">
                     <form method="POST" @submit.prevent="submit">
-                        <button class="rounded px-3 py-2 text-white bg-blue-500">Confirmer</button>
+                        <template x-if="!sending">
+                            <button class="rounded px-3 py-2 text-white bg-blue-500">Confirmer</button>
+                        </template>
+                        <template x-if="sending">
+                            <button disabled class="rounded px-3 py-2 text-gray-500 bg-gray-300 flex space-x-4 items-center">
+                                <span>Chargement...</span>
+                                <i class="fas fa-circle-notch fa-spin"></i>
+                            </button>
+                        </template>
                     </form>
-                    <button class="rounded px-3 py-2 text-white bg-red-500" @click="close">Annuler</button>
+                    <template x-if="!sending">
+                        <button class="rounded px-3 py-2 text-white bg-red-500" @click="close">Annuler</button>
+                    </template>
                 </div>
             </div>
         </div>
