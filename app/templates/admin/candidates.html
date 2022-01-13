@@ -17,18 +17,10 @@
                     <td class="px-4 py-2">{{ candidate.last_name if candidate.last_name else "-" }}</td>
                     <td class="px-4 py-2">{{ candidate.email }}</td>
                     <td class="px-4 py-2 flex space-x-2">
-                        {% if candidate.is_active %}
+                        {% if not candidate.is_active %}
                             <button 
                                 @click="open"
-                                data-next="/admin/deactivate/users/{{ candidate.id }}"
-                                data-message="Voulez-vous vraiment désactiver ce candidat ?"
-                                class="flex-1 rounded px-3 py-1 text-white bg-yellow-500 text-sm hover:bg-yellow-600 focus:outline-none focus:ring focus:ring-yellow-600 focus:ring-opacity-50">
-                                Désactiver
-                            </button>
-                        {% else %}
-                            <button 
-                                @click="open"
-                                data-next="/admin/activate/users/{{ candidate.id }}"
+                                data-next="{{ url_for('admin.activate_user', id=candidate.id) }}"
                                 data-message="Voulez-vous vraiment activer ce candidat ?"
                                 class="flex-1 rounded px-3 py-1 text-white bg-blue-500 text-sm hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-600 focus:ring-opacity-50">
                                 Activer
@@ -37,7 +29,7 @@
                         {% if current_user.role == "administrator" %}
                             <button 
                                 @click="open"
-                                data-next="/admin/delete/users/{{ candidate.id }}"
+                                data-next="{{ url_for('admin.delete_user', id=candidate.id) }}"
                                 data-message="Voulez-vous vraiment supprimer ce candidat ?"
                                 class="flex-1 rounded px-3 py-1 text-white bg-red-500 text-sm hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-600 focus:ring-opacity-50">
                                 Supprimer

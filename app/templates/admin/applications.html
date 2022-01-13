@@ -4,29 +4,35 @@
     <table class="w-full">
         <thead>
             <tr class="bg-gray-300 text-left">
-                <th class="px-4 py-2 font-normal">Recruteur</th>
+                <th class="px-4 py-2 font-normal">Poste</th>
                 <th class="px-4 py-2 font-normal">Candidat</th>
+                <th class="px-4 py-2 font-normal">CV</th>
                 <th class="px-4 py-2 font-normal">Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for application in applications %}
                 <tr class="text-gray-400 border-b">
-                    <td class="px-4 py-2">{{ application.job.recruiter.email }}</td>
+                    <td class="px-4 py-2">
+                        <a 
+                            href="{{ url_for('jobs.show', id=application.job.id) }}" 
+                            class="text-blue-500 hover:underline">
+                            {{ application.job.title }}
+                        </a>
+                    </td>
                     <td class="px-4 py-2">{{ application.candidate.email }}</td>
+                    <td class="px-4 py-2">
+                        <a 
+                            href="{{ url_for('static', filename='uploads/' + application.candidate.resume_file) }}"
+                            class="text-blue-500 hover:underline">
+                            Visualiser
+                        </a>
+                    </td>
                     <td class="px-4 py-2 flex space-x-2">
-                        {% if application.is_active %}
+                        {% if not application.is_active %}
                             <button 
                                 @click="open"
-                                data-next="/admin/deactivate/applications/{{ application.job_id }}/{{ application.user_id }}"
-                                data-message="Voulez-vous vraiment désactiver cette candidature ?"
-                                class="flex-1 rounded px-3 py-1 text-white bg-yellow-500 text-sm hover:bg-yellow-600 focus:outline-none focus:ring focus:ring-yellow-600 focus:ring-opacity-50">
-                                Désactiver
-                            </button>
-                        {% else %}
-                            <button 
-                                @click="open"
-                                data-next="/admin/activate/applications/{{ application.job_id }}/{{ application.user_id }}"
+                                data-next="{{ url_for('admin.activate_application', job_id=application.job.id, user_id=application.candidate.id) }}"
                                 data-message="Voulez-vous vraiment activer cette candidature ?"
                                 class="flex-1 rounded px-3 py-1 text-white bg-blue-500 text-sm hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-600 focus:ring-opacity-50">
                                 Activer
@@ -35,7 +41,7 @@
                         {% if current_user.role == "administrator" %}
                             <button 
                                 @click="open"
-                                data-next="/admin/delete/applications/{{ application.job_id }}/{{ application.user_id }}"
+                                data-next="{{ url_for('admin.delete_application', job_id=application.job.id, user_id=application.candidate.id) }}"
                                 data-message="Voulez-vous vraiment supprimer cette candidature ?"
                                 class="flex-1 rounded px-3 py-1 text-white bg-red-500 text-sm hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-600 focus:ring-opacity-50">
                                 Supprimer
