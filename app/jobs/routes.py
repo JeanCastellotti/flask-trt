@@ -31,10 +31,10 @@ def create():
 @jobs.route("/<int:id>")
 def show(id):
     job = Job.query.get_or_404(id)
-    if not job.is_active and not current_user.is_anonymous and current_user.role == "candidate":
+    if not job.is_active and (current_user.is_anonymous or current_user.is_authenticated and current_user.role == "candidate"):
         return abort(403)
-    application = Application.query.filter_by(job_id=job.id, user_id=current_user.id).first()
-    return render_template("jobs/show.html", job=job, application=application)
+    # application = Application.query.filter_by(job_id=job.id, user_id=current_user.id).first()
+    return render_template("jobs/show.html", job=job)
 
 
 @jobs.route("/<int:id>/apply", methods=["POST"])
