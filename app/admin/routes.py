@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, abort, flash, redirect, url_for
-from flask_login import login_required, current_user
+from flask_login import login_required
 from app.models import User, Candidate, Recruiter, Consultant, Administrator, Job, Application
 from app import db, bcrypt
-from app.utils import roles_required
+from app.utils import roles_required, send_email
 from .forms import CreateUserForm
 
 admin = Blueprint("admin", __name__, url_prefix="/admin")
@@ -44,7 +44,7 @@ def jobs():
 @login_required
 @roles_required("consultant", "administrator")
 def applications():
-    applications = Application.query.order_by().all()
+    applications = Application.query.order_by(Application.created_at.desc()).all()
     return render_template("admin/applications.html", applications=applications)
 
 
@@ -68,24 +68,24 @@ def activate_user(id):
     return redirect(url_for(next_page))
 
 
-@admin.route("/deactivate/users/<int:id>", methods=["POST"])
-@login_required
-@roles_required("consultant", "administrator")
-def deactivate_user(id):
-    user = User.query.get_or_404(id)
-    if not user.is_active:
-        flash("Le compte de cet utilisateur a déjà été désactivé.", "warning")
-        return redirect(url_for("admin.candidates"))
-    user.is_active = False
-    db.session.commit()
-    if user.role == "candidate":
-        role = "candidat"
-        next_page = "admin.candidates"
-    else:
-        role = "recruteur"
-        next_page = "admin.recruiters"
-    flash(f"Le {role} a bien été désactivé.", "success")
-    return redirect(url_for(next_page))
+# @admin.route("/deactivate/users/<int:id>", methods=["POST"])
+# @login_required
+# @roles_required("consultant", "administrator")
+# def deactivate_user(id):
+#     user = User.query.get_or_404(id)
+#     if not user.is_active:
+#         flash("Le compte de cet utilisateur a déjà été désactivé.", "warning")
+#         return redirect(url_for("admin.candidates"))
+#     user.is_active = False
+#     db.session.commit()
+#     if user.role == "candidate":
+#         role = "candidat"
+#         next_page = "admin.candidates"
+#     else:
+#         role = "recruteur"
+#         next_page = "admin.recruiters"
+#     flash(f"Le {role} a bien été désactivé.", "success")
+#     return redirect(url_for(next_page))
 
 
 @admin.route("/delete/users/<int:id>", methods=["POST"])
@@ -122,18 +122,18 @@ def activate_job(id):
     return redirect(url_for("admin.jobs"))
 
 
-@admin.route("/deactivate/jobs/<int:id>", methods=["POST"])
-@login_required
-@roles_required("consultant", "administrator")
-def deactivate_job(id):
-    job = Job.query.get_or_404(id)
-    if not job.is_active:
-        flash("Cette annonce a déjà été désactivée.", "warning")
-        return redirect(url_for("admin.jobs"))
-    job.is_active = False
-    db.session.commit()
-    flash(f"L'annonce a bien été désactivée.", "success")
-    return redirect(url_for("admin.jobs"))
+# @admin.route("/deactivate/jobs/<int:id>", methods=["POST"])
+# @login_required
+# @roles_required("consultant", "administrator")
+# def deactivate_job(id):
+#     job = Job.query.get_or_404(id)
+#     if not job.is_active:
+#         flash("Cette annonce a déjà été désactivée.", "warning")
+#         return redirect(url_for("admin.jobs"))
+#     job.is_active = False
+#     db.session.commit()
+#     flash(f"L'annonce a bien été désactivée.", "success")
+#     return redirect(url_for("admin.jobs"))
 
 
 @admin.route("/delete/jobs/<int:id>", methods=["POST"])
@@ -193,22 +193,23 @@ def activate_application(job_id, user_id):
         return redirect(url_for("admin.applications"))
     application.is_active = True
     db.session.commit()
+    send_email(application.job.recruiter.email, f"static/uploads/{application.candidate.resume_file}")
     flash(f"La candidature a bien été activée.", "success")
     return redirect(url_for("admin.applications"))
 
 
-@admin.route("/deactivate/applications/<int:job_id>/<int:user_id>", methods=["POST"])
-@login_required
-@roles_required("consultant", "administrator")
-def deactivate_application(job_id, user_id):
-    application = Application.query.filter_by(job_id=job_id, user_id=user_id).first_or_404()
-    if not application.is_active:
-        flash("Cette candidature a déjà été désactivée.", "warning")
-        return redirect(url_for("admin.applications"))
-    application.is_active = False
-    db.session.commit()
-    flash(f"La candidature a bien été désactivée.", "success")
-    return redirect(url_for("admin.applications"))
+# @admin.route("/deactivate/applications/<int:job_id>/<int:user_id>", methods=["POST"])
+# @login_required
+# @roles_required("consultant", "administrator")
+# def deactivate_application(job_id, user_id):
+#     application = Application.query.filter_by(job_id=job_id, user_id=user_id).first_or_404()
+#     if not application.is_active:
+#         flash("Cette candidature a déjà été désactivée.", "warning")
+#         return redirect(url_for("admin.applications"))
+#     application.is_active = False
+#     db.session.commit()
+#     flash(f"La candidature a bien été désactivée.", "success")
+#     return redirect(url_for("admin.applications"))
 
 
 @admin.route("/delete/applications/<int:job_id>/<int:user_id>", methods=["POST"])
