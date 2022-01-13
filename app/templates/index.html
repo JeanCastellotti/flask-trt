@@ -3,16 +3,16 @@
 {% block content %}
     <h1 class="text-xl text-gray-800 mb-5">Les dernières annonces</h1>
     <div class="space-y-5">
-        {% for job in jobs %}
+        {% for job in jobs.items %}
             <div class="rounded bg-white shadow-sm p-4 transition transform hover:scale-105 relative">
                 <a href="{{ url_for('jobs.show', id=job.id) }}" class="absolute inset-0"></a>
-                <div class="flex items-center justify-between">
-                    <h2 class="text-lg text-gray-800">{{ job.title }}</h2>
+                <div class="flex items-center space-x-4">
+                    <h2 class="text-lg text-gray-800 mr-auto">{{ job.title }}</h2>
                     <div class="text-gray-400 flex items-center space-x-2">
                         <i class="fas fa-map-marker"></i>
                         <span>{{ job.place }}</span>
                     </div>
-                    <div>
+                    <div class="text-gray-800 text-sm">
                         {{ job.created_at.strftime('%d-%m-%Y') }}
                     </div>
                 </div>
@@ -20,5 +20,23 @@
         {% else %}
             <div class="text-center py-4 text-gray-600">Aucune annonce</div>
         {% endfor %}
+        {% if jobs.pages %}
+            <div class="flex space-x-4 justify-end">
+                {% if jobs.has_prev %}
+                    <a 
+                        href="{{ url_for('main.home', page=jobs.prev_num) }}"
+                        class="inline-block bg-blue-500 px-3 py-1 rounded text-white hover:bg-blue-600 transition focus:outline-none">
+                        Précédent
+                    </a>
+                {% endif %}
+                {% if jobs.has_next %}
+                    <a 
+                        href="{{ url_for('main.home', page=jobs.next_num) }}"
+                        class="inline-block bg-blue-500 px-3 py-1 rounded text-white hover:bg-blue-600 transition focus:outline-none">
+                        Suivant
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
