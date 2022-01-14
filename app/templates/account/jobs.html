@@ -21,7 +21,15 @@
                             {{ job.title }}
                         </a>
                     </td>
-                    <td class="px-4 py-2">{{ job.applications | selectattr('is_active', 'true') | list | length }}</td>
+                    <td class="px-4 py-2">
+                        {% if job.applications|selectattr('is_active', 'true')|list %}
+                            <a href="{{ url_for('jobs.show', id=job.id, _anchor='candidates') }}" class="text-blue-500 hover:underline">
+                                {{ job.applications|selectattr('is_active', 'true')|list|length }}
+                            </a>
+                        {% else %}
+                            0
+                        {% endif %}
+                    </td>
                     <td class="px-4 py-2">{{ job.created_at.strftime("%d-%m-%Y") }}</td>
                     <td class="px-4 py-2 flex space-x-2">
                         {% if job.is_active %}
