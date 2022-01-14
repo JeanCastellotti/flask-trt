@@ -11,6 +11,7 @@ document.addEventListener('alpine:init', () => {
             this.visible = true
         },
         close() {
+            if (this.sending) return
             this.visible = false
             this.message = null
             this.next = null
