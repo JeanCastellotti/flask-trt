@@ -10,7 +10,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for job in jobs %}
+            {% for job in jobs.items %}
                 <tr class="text-gray-400 border-b">
                     <td class="px-4 py-2">
                         <a href="{{ url_for('jobs.show', id=job.id) }}" class="text-blue-500 hover:underline">{{ job.title }}</a>
@@ -44,4 +44,18 @@
             {% endfor %}
         </tbody>
     </table>
+    {% if jobs.pages %}
+        <div class="flex items-center justify-end space-x-4 mt-5">
+            {% if jobs.has_prev %}
+                <a 
+                    href="{{ url_for('admin.jobs', page=jobs.prev_num) }}"
+                    class="rounded px-3 py-1 bg-blue-500 text-white hover:bg-blue-600">Précédent</a>   
+            {% endif %}
+            {% if jobs.has_next %}
+                <a 
+                    href="{{ url_for('admin.jobs', page=jobs.next_num) }}"
+                    class="rounded px-3 py-1 bg-blue-500 text-white hover:bg-blue-600">Suivant</a>
+            {% endif %}
+        </div>
+    {% endif %}
 {% endblock %}

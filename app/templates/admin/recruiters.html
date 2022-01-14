@@ -10,7 +10,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for recruiter in recruiters %}
+            {% for recruiter in recruiters.items %}
                 <tr class="text-gray-400 border-b">
                     <td class="px-4 py-2">{{ recruiter.company if recruiter.company else "-" }}</td>
                     <td class="px-4 py-2">{{ recruiter.email }}</td>
@@ -42,4 +42,18 @@
             {% endfor %}
         </tbody>
     </table>
+    {% if recruiters.pages %}
+        <div class="flex items-center justify-end space-x-4 mt-5">
+            {% if recruiters.has_prev %}
+                <a 
+                    href="{{ url_for('admin.recruiters', page=recruiters.prev_num) }}"
+                    class="rounded px-3 py-1 bg-blue-500 text-white hover:bg-blue-600">Précédent</a>   
+            {% endif %}
+            {% if recruiters.has_next %}
+                <a 
+                    href="{{ url_for('admin.recruiters', page=recruiters.next_num) }}"
+                    class="rounded px-3 py-1 bg-blue-500 text-white hover:bg-blue-600">Suivant</a>
+            {% endif %}
+        </div>
+    {% endif %}
 {% endblock %}

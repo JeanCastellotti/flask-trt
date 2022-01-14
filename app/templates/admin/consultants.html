@@ -9,7 +9,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for consultant in consultants %}
+            {% for consultant in consultants.items %}
                 <tr class="text-gray-400 border-b">
                     <td class="px-4 py-2">{{ consultant.email }}</td>
                     <td class="px-4 py-2 flex space-x-2">
@@ -29,9 +29,23 @@
             {% endfor %}
         </tbody>
     </table>
-    <a 
-        href="{{ url_for('admin.create_consultant') }}" 
-        class="inline-block mt-2 rounded px-3 py-1 text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-600 focus:ring-opacity-50">
-        Créer un consultant
-    </a>
+    <div class="flex items-center justify-end space-x-4 mt-5">
+        <a 
+            href="{{ url_for('admin.create_consultant') }}" 
+            class="inline-block mr-auto rounded px-3 py-1 text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-600 focus:ring-opacity-50">
+            Créer un consultant
+        </a>
+        {% if consultants.pages %}
+            {% if consultants.has_prev %}
+                <a 
+                    href="{{ url_for('admin.consultants', page=consultants.prev_num) }}"
+                    class="rounded px-3 py-1 bg-blue-500 text-white hover:bg-blue-600">Précédent</a>   
+            {% endif %}
+            {% if consultants.has_next %}
+                <a 
+                    href="{{ url_for('admin.consultants', page=consultants.next_num) }}"
+                    class="rounded px-3 py-1 bg-blue-500 text-white hover:bg-blue-600">Suivant</a>
+            {% endif %}
+        {% endif %}
+    </div>
 {% endblock %}

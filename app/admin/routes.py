@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, abort, flash, redirect, url_for
+from flask import Blueprint, render_template, abort, flash, redirect, url_for, request
 from flask_login import login_required
 from app.models import User, Candidate, Recruiter, Consultant, Administrator, Job, Application
 from app import db, bcrypt
@@ -12,7 +12,8 @@ admin = Blueprint("admin", __name__, url_prefix="/admin")
 @login_required
 @roles_required("consultant", "administrator")
 def candidates():
-    candidates = Candidate.query.order_by(User.id.desc()).all()
+    page = request.args.get("page", 1, type=int)
+    candidates = Candidate.query.order_by(User.id.desc()).paginate(page=page, per_page=5)
     return render_template("admin/candidates.html", candidates=candidates)
 
 
@@ -20,7 +21,8 @@ def candidates():
 @login_required
 @roles_required("consultant", "administrator")
 def recruiters():
-    recruiters = Recruiter.query.order_by(User.id.desc()).all()
+    page = request.args.get("page", 1, type=int)
+    recruiters = Recruiter.query.order_by(User.id.desc()).paginate(page=page, per_page=5)
     return render_template("admin/recruiters.html", recruiters=recruiters)
 
 
@@ -28,7 +30,8 @@ def recruiters():
 @login_required
 @roles_required("administrator")
 def consultants():
-    consultants = Consultant.query.order_by(User.id.desc()).all()
+    page = request.args.get("page", 1, type=int)
+    consultants = Consultant.query.order_by(User.id.desc()).paginate(page=page, per_page=5)
     return render_template("admin/consultants.html", consultants=consultants)
 
 
@@ -36,7 +39,8 @@ def consultants():
 @login_required
 @roles_required("consultant", "administrator")
 def jobs():
-    jobs = Job.query.order_by(Job.id.desc()).all()
+    page = request.args.get("page", 1, type=int)
+    jobs = Job.query.order_by(Job.id.desc()).paginate(page=page, per_page=5)
     return render_template("admin/jobs.html", jobs=jobs)
 
 
@@ -44,7 +48,8 @@ def jobs():
 @login_required
 @roles_required("consultant", "administrator")
 def applications():
-    applications = Application.query.order_by(Application.created_at.desc()).all()
+    page = request.args.get("page", 1, type=int)
+    applications = Application.query.order_by(Application.created_at.desc()).paginate(page=page, per_page=5)
     return render_template("admin/applications.html", applications=applications)
 
 
