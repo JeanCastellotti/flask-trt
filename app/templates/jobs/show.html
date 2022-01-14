@@ -34,6 +34,35 @@
                 Postuler à cette annonce
         </button>
     {% endif %}
+    {% if current_user.role == "recruiter" and job.applications|selectattr('is_active', 'true')|list|length %}
+        <h2 class="mt-5 text-lg text-gray-800" id="candidates">Les candidats</h2>
+        <table class="w-full mt-5">
+            <thead>
+                <tr class="bg-gray-300 text-left">
+                    <th class="px-4 py-2 font-normal">Nom</th>
+                    <th class="px-4 py-2 font-normal">Prénom</th>
+                    <th class="px-4 py-2 font-normal">Email</th>
+                    <th class="px-4 py-2 font-normal">CV</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for application in job.applications|selectattr('is_active', 'true')|list %}
+                    <tr class="text-gray-400 border-b">
+                        <td class="px-4 py-2">{{ application.candidate.first_name }}</td>
+                        <td class="px-4 py-2">{{ application.candidate.last_name }}</td>
+                        <td class="px-4 py-2">{{ application.candidate.email }}</td>
+                        <td class="px-4 py-2">
+                            <a 
+                                href="{{ url_for('static', filename='uploads/' + application.candidate.resume_file) }}"
+                                class="flex-1 rounded px-3 py-1 text-white bg-blue-500 text-sm hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-600 focus:ring-opacity-50">
+                                Visualiser
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 {% endblock %}
 
 {% block javascript %}
