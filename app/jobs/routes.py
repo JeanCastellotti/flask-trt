@@ -16,9 +16,11 @@ def create():
         return redirect(url_for("main.home"))
     form = CreateJobForm()
     if form.validate_on_submit():
+        print(form.working_hours.data)
         job = Job(title=form.title.data.strip(), 
                   salary=form.salary.data, 
                   place=form.place.data.strip(), 
+                  working_hours=form.working_hours.data,
                   description=form.description.data.strip(),
                   recruiter=current_user)
         db.session.add(job)
