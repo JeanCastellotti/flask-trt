@@ -62,6 +62,7 @@ class Job(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
     place = db.Column(db.String(50), nullable=False)
+    working_hours = db.Column(db.ARRAY(db.String), nullable=False)
     salary = db.Column(db.Integer, nullable=False)
     description = db.Column(db.Text, nullable=False)
     recruiter_id = db.Column(db.Integer, 
