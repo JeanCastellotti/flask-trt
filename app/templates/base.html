@@ -13,11 +13,33 @@
             crossorigin="anonymous">
         <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     </head>
-    <body class="bg-gray-100 pb-3" :class="{'overflow-hidden': visible}" x-data="modal">
+    <body class="bg-gray-100 pb-3" :class="{'overflow-hidden': visible || mobile}"  x-data="app">
+        <nav class="bg-slate-400 text-white fixed inset-0 flex z-50" x-show="mobile">
+            <div class="m-auto flex flex-col text-2xl space-y-4 items-center">
+                <a href="{{ url_for('main.home') }}" class="hover:underline">Accueil</a>
+                {% if current_user.is_authenticated %}
+                    {% if current_user.role == "recruiter" %}
+                        <a href="{{ url_for('jobs.create')}}" class="hover:underline">Publier une annonce</a>
+                    {% endif %}
+                    {% if current_user.role in ["consultant", "administrator"] %}
+                        <a href="{{ url_for('admin.candidates') }}" class="hover:underline">Gérer</a>
+                    {% else %}
+                        <a href="{{ url_for('account.informations') }}" class="hover:underline">Mon compte</a>
+                    {% endif %}
+                    <a href="{{ url_for('auth.logout') }}" class="hover:underline">Se déconnecter</a>
+                {% else %}
+                    <a href="{{ url_for('auth.register')}}" class="hover:underline">Créer un compte</a>
+                    <a href="{{ url_for('auth.login')}}" class="hover:underline">Se connecter</a>
+                {% endif %}
+            </div>
+            <button class="absolute right-8 bottom-6" @click="mobile = false">
+                <i class="fas fa-times fa-2x"></i>
+            </button>
+        </nav>
         <header class="bg-slate-200 mb-5">
-            <div class="max-w-screen-md mx-auto py-4 flex justify-between items-center">
+            <div class="max-w-screen-md mx-auto py-4 flex justify-between items-center px-5 md:px-0">
                 <div class="text-2xl text-gray-800">TRT Conseil</div>
-                <nav class="space-x-4 text-gray-500">
+                <nav class="space-x-4 text-gray-500 hidden md:block">
                     <a href="{{ url_for('main.home') }}" class="hover:text-gray-800">Accueil</a>
                     {% if current_user.is_authenticated %}
                         {% if current_user.role == "recruiter" %}
@@ -34,9 +56,12 @@
                         <a href="{{ url_for('auth.login')}}" class="hover:text-gray-800">Se connecter</a>
                     {% endif %}
                 </nav>
+                <button class="md:hidden" @click="mobile = true">
+                    <i class="fas fa-bars fa-2x"></i>
+                </button>
             </div>
         </header>
-        <div class="max-w-screen-md mx-auto">
+        <div class="max-w-screen-md mx-auto px-5 md:px-0">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
@@ -61,7 +86,7 @@
             {% endwith %}
             {% block content %}{% endblock %}
         </div>
-        <div x-show="visible" class="bg-gray-800 bg-opacity-60 flex fixed inset-0" x-cloak>
+        <div x-show="visible" class="bg-gray-800 bg-opacity-60 flex fixed inset-0 px-5" x-cloak>
             <div class="rounded bg-white p-6 m-auto max-w-screen-sm" @click.away="close">
                 <p x-text="message"></p>
                 <div class="border-t pt-6 mt-6 flex justify-end space-x-2">

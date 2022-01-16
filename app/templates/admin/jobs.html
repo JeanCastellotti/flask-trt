@@ -1,49 +1,51 @@
 {% extends "admin/base.html" %}
 
 {% block admin %}
-    <table class="w-full">
-        <thead>
-            <tr class="bg-gray-300 text-left">
-                <th class="px-4 py-2 font-normal">Titre</th>
-                <th class="px-4 py-2 font-normal">Lieu</th>
-                <th class="px-4 py-2 font-normal">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for job in jobs.items %}
-                <tr class="text-gray-400 border-b">
-                    <td class="px-4 py-2">
-                        <a href="{{ url_for('jobs.show', id=job.id) }}" class="text-blue-500 hover:underline">{{ job.title }}</a>
-                    </td>
-                    <td class="px-4 py-2">{{ job.place }}</td>
-                    <td class="px-4 py-2 flex space-x-2">
-                        {% if not job.is_active %}
-                            <button 
-                                @click="open"
-                                data-next="{{ url_for('admin.activate_job', id=job.id) }}"
-                                data-message="Voulez-vous vraiment activer cette annonce ?"
-                                class="flex-1 rounded px-3 py-1 text-white bg-blue-500 text-sm hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-600 focus:ring-opacity-50">
-                                Activer
-                            </button>
-                        {% endif %}
-                        {% if current_user.role == "administrator" %}
-                            <button 
-                                @click="open"
-                                data-next="{{ url_for('admin.delete_job', id=job.id)}}"
-                                data-message="Voulez-vous vraiment supprimer cette annonce ?"
-                                class="flex-1 rounded px-3 py-1 text-white bg-red-500 text-sm hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-600 focus:ring-opacity-50">
-                                Supprimer
-                            </button>
-                        {% endif %}
-                    </td>
+    <div class="overflow-x-scroll">
+        <table class="w-full">
+            <thead>
+                <tr class="bg-gray-300 text-left">
+                    <th class="px-4 py-2 font-normal">Titre</th>
+                    <th class="px-4 py-2 font-normal">Lieu</th>
+                    <th class="px-4 py-2 font-normal">Actions</th>
                 </tr>
-            {% else %}
-                <tr>
-                    <td colspan="4" class="text-center py-2 text-gray-500">Aucune annonce</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for job in jobs.items %}
+                    <tr class="text-gray-400 border-b">
+                        <td class="px-4 py-2">
+                            <a href="{{ url_for('jobs.show', id=job.id) }}" class="text-blue-500 hover:underline">{{ job.title }}</a>
+                        </td>
+                        <td class="px-4 py-2">{{ job.place }}</td>
+                        <td class="px-4 py-2 flex space-x-2">
+                            {% if not job.is_active %}
+                                <button 
+                                    @click="open"
+                                    data-next="{{ url_for('admin.activate_job', id=job.id) }}"
+                                    data-message="Voulez-vous vraiment activer cette annonce ?"
+                                    class="flex-1 rounded px-3 py-1 text-white bg-blue-500 text-sm hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-600 focus:ring-opacity-50">
+                                    Activer
+                                </button>
+                            {% endif %}
+                            {% if current_user.role == "administrator" %}
+                                <button 
+                                    @click="open"
+                                    data-next="{{ url_for('admin.delete_job', id=job.id)}}"
+                                    data-message="Voulez-vous vraiment supprimer cette annonce ?"
+                                    class="flex-1 rounded px-3 py-1 text-white bg-red-500 text-sm hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-600 focus:ring-opacity-50">
+                                    Supprimer
+                                </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center py-2 text-gray-500">Aucune annonce</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% if jobs.pages %}
         <div class="flex items-center justify-end space-x-4 mt-5">
             {% if jobs.has_prev %}

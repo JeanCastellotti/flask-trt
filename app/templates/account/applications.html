@@ -1,40 +1,42 @@
 {% extends "account/base.html" %}
 
 {% block account %}
-    <table class="w-full">
-        <thead>
-            <tr class="bg-gray-300 text-left">
-                <th class="px-4 py-2 font-normal">Poste</th>
-                <th class="px-4 py-2 font-normal">Date</th>
-                <th class="px-4 py-2 font-normal">Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for application in applications.items %}
-                <tr class="text-gray-400 border-b">
-                    <td class="px-4 py-2">
-                        <a 
-                            href="{{ url_for('jobs.show', id=application.job.id) }}"
-                            class="text-blue-500 hover:underline">
-                            {{ application.job.title }}
-                        </a>
-                    </td>
-                    <td class="px-4 py-2">{{ application.created_at.strftime("%d-%m-%Y") }}</td>
-                    <td class="px-4 py-2 flex space-x-2">
-                        {% if application.is_active %}
-                            Envoyée
-                        {% else %}
-                            En attente
-                        {% endif %}
-                    </td>
+    <div class="overflow-x-scroll">
+        <table class="w-full">
+            <thead>
+                <tr class="bg-gray-300 text-left">
+                    <th class="px-4 py-2 font-normal">Poste</th>
+                    <th class="px-4 py-2 font-normal">Date</th>
+                    <th class="px-4 py-2 font-normal">Status</th>
                 </tr>
-            {% else %}
-                <tr>
-                    <td colspan="4" class="text-center py-2 text-gray-500">Aucune candidature</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for application in applications.items %}
+                    <tr class="text-gray-400 border-b">
+                        <td class="px-4 py-2">
+                            <a 
+                                href="{{ url_for('jobs.show', id=application.job.id) }}"
+                                class="text-blue-500 hover:underline">
+                                {{ application.job.title }}
+                            </a>
+                        </td>
+                        <td class="px-4 py-2 whitespace-nowrap">{{ application.created_at.strftime("%d-%m-%Y") }}</td>
+                        <td class="px-4 py-2 flex space-x-2">
+                            {% if application.is_active %}
+                                Envoyée
+                            {% else %}
+                                En attente
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center py-2 text-gray-500">Aucune candidature</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% if applications.pages %}
         <div class="flex justify-end space-x-4 mt-5">
             {% if applications.has_prev %}

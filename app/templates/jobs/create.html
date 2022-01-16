@@ -29,7 +29,15 @@
                 {% for error in form.salary.errors %}
                     <span class="inline-block text-sm text-red-500 mt-1">{{ error }}</span>
                 {% endfor %}
-            {% else %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.working_hours.label(class="mb-1 block text-gray-800") }}
+            {{ form.working_hours(class="w-full rounded p-4 focus:outline-none focus:ring focus:ring-gray-200 focus:ring-opacity-50") }}
+            {% if form.working_hours.errors %}
+                {% for error in form.working_hours.errors %}
+                    <span class="inline-block text-sm text-red-500 mt-1">{{ error }}</span>
+                {% endfor %}
             {% endif %}
         </div>
         <div class="mb-3">

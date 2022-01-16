@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="pb-5 mb-5 border-b flex items-center justify-between">
+    <div class="pb-5 mb-5 border-b md:flex space-y-2 md:space-y-0 items-center justify-between">
         <h1 class="text-xl text-gray-800">{{ job.title }}</h1>
-        <div class="text-sm text-gray-500 flex items-center space-x-6">
+        <div class="text-sm text-gray-500 md:flex items-center space-y-2 md:space-y-0 md:space-x-6">
             {% if job.recruiter.company %}
                 <div class="space-x-1">
                     <i class="fas fa-building"></i>
@@ -12,7 +12,7 @@
             {% endif %}
             <div class="space-x-1">
                 <i class="fas fa-money-bill-wave"></i>
-                <span>{{ job.salary }}</span>
+                <span>{{ job.salary }} €</span>
             </div>
             <div class="space-x-1">
                 <i class="fas fa-map-marker"></i>
@@ -25,6 +25,21 @@
         </div>
     </div>
     <p class="whitespace-pre-wrap text-gray-800">{{ job.description }}</p>
+    <h2 class="text-lg text-gray-800 mt-5 flex items-center space-x-2">
+        <i class="fas fa-clock"></i>
+        <span>Les horaires</span>
+    </h2>
+    <ul class="mt-5">
+        {% for hour in job.working_hours %}
+            {% if hour == 'week' %}
+                <li>Du lundi au vendredi</li>
+            {% elif hour == 'week-end' %}
+                <li>Le week-end</li>
+            {% elif hour == 'evening' %}
+                <li>Le soir</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
     {% if current_user.role == "candidate" and not job.applications|selectattr('user_id', 'equalto', current_user.id)|list %}
         <button 
             @click="open"
@@ -35,33 +50,38 @@
         </button>
     {% endif %}
     {% if current_user.role == "recruiter" and job.applications|selectattr('is_active', 'true')|list|length %}
-        <h2 class="mt-5 text-lg text-gray-800" id="candidates">Les candidats</h2>
-        <table class="w-full mt-5">
-            <thead>
-                <tr class="bg-gray-300 text-left">
-                    <th class="px-4 py-2 font-normal">Nom</th>
-                    <th class="px-4 py-2 font-normal">Prénom</th>
-                    <th class="px-4 py-2 font-normal">Email</th>
-                    <th class="px-4 py-2 font-normal">CV</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for application in job.applications|selectattr('is_active', 'true')|list %}
-                    <tr class="text-gray-400 border-b">
-                        <td class="px-4 py-2">{{ application.candidate.first_name }}</td>
-                        <td class="px-4 py-2">{{ application.candidate.last_name }}</td>
-                        <td class="px-4 py-2">{{ application.candidate.email }}</td>
-                        <td class="px-4 py-2">
-                            <a 
-                                href="{{ url_for('static', filename='uploads/' + application.candidate.resume_file) }}"
-                                class="flex-1 rounded px-3 py-1 text-white bg-blue-500 text-sm hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-600 focus:ring-opacity-50">
-                                Visualiser
-                            </a>
-                        </td>
+        <h2 class="mt-5 text-lg text-gray-800 flex space-x-2 items-center" id="candidates">
+            <i class="fas fa-users"></i>
+            <span>Les candidats</span>
+        </h2>
+        <div class="overflow-x-scroll">
+            <table class="w-full mt-5">
+                <thead>
+                    <tr class="bg-gray-300 text-left">
+                        <th class="px-4 py-2 font-normal">Nom</th>
+                        <th class="px-4 py-2 font-normal">Prénom</th>
+                        <th class="px-4 py-2 font-normal">Email</th>
+                        <th class="px-4 py-2 font-normal">CV</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for application in job.applications|selectattr('is_active', 'true')|list %}
+                        <tr class="text-gray-400 border-b">
+                            <td class="px-4 py-2">{{ application.candidate.first_name }}</td>
+                            <td class="px-4 py-2">{{ application.candidate.last_name }}</td>
+                            <td class="px-4 py-2">{{ application.candidate.email }}</td>
+                            <td class="px-4 py-2">
+                                <a 
+                                    href="{{ url_for('static', filename='uploads/' + application.candidate.resume_file) }}"
+                                    class="flex-1 rounded px-3 py-1 text-white bg-blue-500 text-sm hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-600 focus:ring-opacity-50">
+                                    Visualiser
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% endif %}
 {% endblock %}
 
