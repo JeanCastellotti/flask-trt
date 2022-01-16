@@ -6,6 +6,7 @@ from flask_login import current_user
 from flask_mail import Message
 from urllib.parse import urlparse, urljoin
 from app import mail
+from app.models import Job, Candidate, Recruiter
 
 def is_safe_url(url):
     ref_url = urlparse(request.host_url)
@@ -41,15 +42,17 @@ def roles_required(*roles):
     return decorator
 
 
-def send_email(recruiter_email, file_path):
-    message = Message("Nouvelle candidature", sender="noreply@trtconseil.com", recipients=[recruiter_email])
+def send_email(job: Job, recruiter: Recruiter, candidate: Candidate):
+    message = Message("Nouvelle candidature", 
+                      sender=("TRT Conseil", "server.smtp.dev@gmail.com"), 
+                      recipients=[recruiter.email])
     message.body = f"""
     Bonjour,
 
-    Vous avez une nouvelle candidature !
+    Vous avez une nouvelle candidature pour le poste de {job.title} !
 
-    Veuillez trouver ci-joint le CV du candidat.
+    Veuillez trouver ci-joint le CV du candidat ({candidate.first_name} {candidate.last_name}).
     """
-    with app.open_resource(file_path) as fp:
+    with app.open_resource(f"static/uploads/{candidate.resume_file}") as fp:
         message.attach('cv.pdf', 'application/pdf', fp.read())
     mail.send(message)
