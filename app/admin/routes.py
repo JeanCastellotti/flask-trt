@@ -198,7 +198,7 @@ def activate_application(job_id, user_id):
         return redirect(url_for("admin.applications"))
     application.is_active = True
     db.session.commit()
-    send_email(application.job.recruiter.email, f"static/uploads/{application.candidate.resume_file}")
+    send_email(job=application.job, candidate=application.candidate, recruiter=application.job.recruiter)
     flash(f"La candidature a bien été activée.", "success")
     return redirect(url_for("admin.applications"))
 
