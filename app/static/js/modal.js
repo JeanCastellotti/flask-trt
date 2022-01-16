@@ -1,9 +1,10 @@
 document.addEventListener('alpine:init', () => {
-    Alpine.data('modal', () => ({
+    Alpine.data('app', () => ({
         visible: false,
         message: null,
         next: null,
         sending: false,
+        mobile: false,
         open(e) {
             this.sending = false
             this.message = e.target.dataset.message
