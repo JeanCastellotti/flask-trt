@@ -16,7 +16,7 @@
                         <td class="px-4 py-2">{{ recruiter.company if recruiter.company else "-" }}</td>
                         <td class="px-4 py-2">{{ recruiter.email }}</td>
                         <td class="px-4 py-2 flex space-x-2">
-                            {% if not recruiter.is_active %}
+                            {% if not recruiter.is_active and current_user.role == "consultant" %}
                                 <button 
                                     @click="open"
                                     data-next="{{ url_for('admin.activate_user', id=recruiter.id) }}"

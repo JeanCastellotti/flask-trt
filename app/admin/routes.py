@@ -55,7 +55,7 @@ def applications():
 
 @admin.route("/activate/users/<int:id>", methods=["POST"])
 @login_required
-@roles_required("consultant", "administrator")
+@roles_required("consultant")
 def activate_user(id):
     user = User.query.get_or_404(id)
     if user.is_active:
@@ -115,7 +115,7 @@ def delete_user(id):
 
 @admin.route("/activate/jobs/<int:id>", methods=["POST"])
 @login_required
-@roles_required("consultant", "administrator")
+@roles_required("consultant")
 def activate_job(id):
     job = Job.query.get_or_404(id)
     if job.is_active:
@@ -190,7 +190,7 @@ def create_administrator():
 
 @admin.route("/activate/applications/<int:job_id>/<int:user_id>", methods=["POST"])
 @login_required
-@roles_required("consultant", "administrator")
+@roles_required("consultant")
 def activate_application(job_id, user_id):
     application = Application.query.filter_by(job_id=job_id, user_id=user_id).first_or_404()
     if application.is_active:

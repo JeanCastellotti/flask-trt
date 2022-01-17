@@ -30,7 +30,7 @@
                             </a>
                         </td>
                         <td class="px-4 py-2 flex space-x-2">
-                            {% if not application.is_active %}
+                            {% if not application.is_active and current_user.role == "consultant" %}
                                 <button 
                                     @click="open"
                                     data-next="{{ url_for('admin.activate_application', job_id=application.job.id, user_id=application.candidate.id) }}"
