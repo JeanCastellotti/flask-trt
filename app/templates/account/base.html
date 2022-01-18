@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1 class="text-xl text-gray-800 flex justify-between items-center mb-5">
+    <h1 class="text-xl text-gray-800 flex flex-col md:flex-row justify-between items-center mb-5">
         <span>Mon compte</span>
-        <span class="text-sm text-gray-400">
+        <span class="text-sm text-gray-400 mt-3 md:mt-0">
             Connecté en tant que {{ current_user.email }}
         </span>
     </h1>
