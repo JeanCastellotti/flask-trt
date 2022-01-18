@@ -5,9 +5,9 @@ from app.models import User
 
 
 class CreateUserForm(FlaskForm):
-    email = EmailField("Email", validators=[DataRequired(), Email()])
-    password = PasswordField("Mot de passe", validators=[DataRequired(), Length(min=8)])
-    password_confirm = PasswordField("Confirmation mot de passe", validators=[DataRequired(), EqualTo("password")])
+    email = EmailField("Email", validators=[DataRequired("Ce champ est obligatoire."), Email("L'adresse email est incorrecte.")])
+    password = PasswordField("Mot de passe", validators=[DataRequired("Ce champ est obligatoire."), Length(min=8, message="Le mot de passe doit faire au moins 8 caractères.")])
+    password_confirm = PasswordField("Confirmation mot de passe", validators=[DataRequired("Ce champ est obligatoire."), EqualTo("password", message="Les mots de passe ne correspondent pas.")])
     submit = SubmitField("Créer")
 
     def validate_email(self, email):
