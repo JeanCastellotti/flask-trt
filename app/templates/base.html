@@ -14,7 +14,7 @@
         <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     </head>
     <body class="bg-gray-100 pb-3" :class="{'overflow-hidden': visible || mobile}"  x-data="app">
-        <nav class="bg-slate-400 text-white fixed inset-0 flex z-50" x-show="mobile">
+        <nav class="bg-slate-400 text-white fixed inset-0 flex z-50" x-show="mobile" x-cloak>
             <div class="m-auto flex flex-col text-2xl space-y-4 items-center">
                 <a href="{{ url_for('main.home') }}" class="hover:underline">Accueil</a>
                 {% if current_user.is_authenticated %}
