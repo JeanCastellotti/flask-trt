@@ -184,7 +184,7 @@ def create_administrator():
         db.session.add(administrator)
         db.session.commit()
         flash("L'administrateur a bien été créé", "success")
-        return redirect("main.home")
+        return redirect(url_for("main.home"))
     return render_template("admin/create-administrator.html", form=form)
 
 
