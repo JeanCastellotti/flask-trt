@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, EmailField, SubmitField
+from flask_login import current_user
 from wtforms.validators import DataRequired, Email, Length, ValidationError
 from app.models import User
 
@@ -9,6 +10,7 @@ class UpdateAccountForm(FlaskForm):
     submit = SubmitField("Mettre à jour")
 
     def validate_email(self, email):
+        if email.data == current_user.email: return
         user = User.query.filter_by(email=email.data).first()
         if user:
             raise ValidationError("Cette adresse email n'est pas disponible.")
