@@ -20,7 +20,23 @@ class UpdateAccountCandidateForm(UpdateAccountForm):
     last_name = StringField("Nom", validators=[Length(max=50)])
     resume_file = FileField("CV", validators=[FileAllowed(["pdf"])])
 
+    def validate_first_name(self, first_name):
+        if current_user.applications and not first_name.data:
+            raise ValidationError("Ce champs est obligatoire.")
+
+    def validate_last_name(self, last_name):
+        if current_user.applications and not last_name.data:
+            raise ValidationError("Ce champs est obligatoire.")
+
 
 class UpdateAccountRecruiterForm(UpdateAccountForm):
     company = StringField("Société", validators=[Length(max=50)])
     address = StringField("Adresse", validators=[Length(max=150)])
+
+    def validate_company(self, company):
+        if current_user.jobs and not company.data:
+            raise ValidationError("Ce champs est obligatoire.")
+
+    def validate_address(self, address):
+        if current_user.jobs and not address.data:
+            raise ValidationError("Ce champs est oligaroire.")
