@@ -43,8 +43,8 @@ def show(id):
 @login_required
 @roles_required("candidate")
 def apply(id):
-    if not current_user.resume_file:
-        flash("Vous devez télécharger un CV avant de pouvoir postuler.", "warning")
+    if not current_user.resume_file or not current_user.first_name or not current_user.last_name:
+        flash("Vous devez compléter votre profil avant de pouvoir postuler à une annonce.", "warning")
         return redirect(url_for("account.informations"))
     job = Job.query.get_or_404(id)
     application = Application.query.filter_by(job_id=job.id, user_id=current_user.id).first()
