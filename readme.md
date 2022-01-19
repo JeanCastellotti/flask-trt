@@ -47,7 +47,7 @@ Installer les packages :
 pip install -r requirements.txt
 ```
 
-Créer un fichier .env avec les informations suivantes :
+Créer un fichier .env à la racine du répertoire avec les informations suivantes :
 
 ```bash
 SECRET_KEY = "secret"
@@ -63,6 +63,14 @@ MAIL_PORT = 465 # Ou 587 par exemple
 # ...
 MAIL_USE_TLS = False
 MAIL_USE_SSL = True
+```
+
+Ajouter les variables suivantes dans le fichier .env :
+
+```python
+# ...
+MAIL_USERNAME = 'username'
+MAIL_PASSWORD = 'password'
 ```
 
 Créer la base de données :
