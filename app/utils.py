@@ -16,6 +16,7 @@ def is_safe_url(url):
 
 
 def save_file(file):
+    print(current_user.resume_file)
     # random_hex = secrets.token_hex(8)
     # _, file_ext = os.path.splitext(file.filename)
     # file_name = random_hex + file_ext
@@ -24,7 +25,7 @@ def save_file(file):
     # delete_file(current_user.resume_file)
     # return file_name
     upload_result = cloudinary.uploader.upload(file)
-    if validators.url(current_user.resume_file):
+    if validators.url(current_user.resume_file or ''):
         public_id = urlparse(current_user.resume_file).path.split('.')[0].split('/')[-1]
         cloudinary.uploader.destroy(public_id)
     return upload_result["secure_url"]
