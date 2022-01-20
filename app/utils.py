@@ -16,7 +16,6 @@ def is_safe_url(url):
 
 
 def save_file(file):
-    print(current_user.resume_file)
     # random_hex = secrets.token_hex(8)
     # _, file_ext = os.path.splitext(file.filename)
     # file_name = random_hex + file_ext
