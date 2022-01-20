@@ -1,5 +1,5 @@
 import os
-import secrets
+import validators
 from functools import wraps
 from flask import request, abort, current_app as app
 from flask_login import current_user
@@ -24,8 +24,9 @@ def save_file(file):
     # delete_file(current_user.resume_file)
     # return file_name
     upload_result = cloudinary.uploader.upload(file)
-    public_id = urlparse(current_user.resume_file).path.split('.')[0].split('/')[-1]
-    cloudinary.uploader.destroy(public_id)
+    if validators.url(current_user.resume_file):
+        public_id = urlparse(current_user.resume_file).path.split('.')[0].split('/')[-1]
+        cloudinary.uploader.destroy(public_id)
     return upload_result["secure_url"]
 
 
