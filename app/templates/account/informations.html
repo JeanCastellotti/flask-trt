@@ -37,7 +37,7 @@
                     {% if current_user.resume_file %}
                         <div class="flex items-center space-x-4">
                             <a 
-                                href="{{ url_for('static', filename='uploads/' + current_user.resume_file) }}" 
+                                href="{{ current_user.resume_file }}" 
                                 class="text-blue-500 hover:underline text-sm">
                                 Consulter
                             </a>

@@ -7,6 +7,7 @@ from flask_mail import Message
 from urllib.parse import urlparse, urljoin
 from app import mail
 from app.models import Job, Candidate, Recruiter
+import cloudinary.uploader
 
 def is_safe_url(url):
     ref_url = urlparse(request.host_url)
@@ -15,13 +16,17 @@ def is_safe_url(url):
 
 
 def save_file(file):
-    random_hex = secrets.token_hex(8)
-    _, file_ext = os.path.splitext(file.filename)
-    file_name = random_hex + file_ext
-    path = os.path.join(app.root_path, 'static/uploads/', file_name)
-    file.save(path)
-    delete_file(current_user.resume_file)
-    return file_name
+    # random_hex = secrets.token_hex(8)
+    # _, file_ext = os.path.splitext(file.filename)
+    # file_name = random_hex + file_ext
+    # path = os.path.join(app.root_path, 'static/uploads/', file_name)
+    # file.save(path)
+    # delete_file(current_user.resume_file)
+    # return file_name
+    upload_result = cloudinary.uploader.upload(file)
+    public_id = urlparse(current_user.resume_file).path.split('.')[0].split('/')[-1]
+    cloudinary.uploader.destroy(public_id)
+    return upload_result["secure_url"]
 
 
 def delete_file(file):

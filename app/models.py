@@ -25,7 +25,7 @@ class Candidate(User):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
     first_name = db.Column(db.String(50))
     last_name = db.Column(db.String(50))
-    resume_file = db.Column(db.String(50))
+    resume_file = db.Column(db.String(255))
     is_active = db.Column(db.Boolean, default=False)
     applications = db.relationship("Application", back_populates="candidate")
 
